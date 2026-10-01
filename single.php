@@ -1,44 +1,50 @@
 <?php
 /**
- * The template for displaying all single posts
+ * Single post.
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
- *
- * @package Susty
+ * @package Cerrajeros_Parla
  */
 
 get_header();
-?>
 
-	<div id="primary">
-		<main id="main" class="post-main">
-
+while ( have_posts() ) :
+	the_post();
+	?>
+	<main id="content" class="site-main">
 		<?php
-		while ( have_posts() ) :
-			the_post();
-
-			get_template_part( 'template-parts/content', get_post_type() );
-
-			the_post_navigation(
-				array(
-					'next_text' => __( 'Next post: %title <span class="screen-reader-text">Continue Reading</span>', 'the-classicpress-theme' ),
-					'prev_text' => __( 'Previous post: %title <span class="screen-reader-text">Continue Reading</span>', 'the-classicpress-theme' ),
-				)
-			);
-
-			// If comments are open or we have at least one comment, load up the comment template.
-			if ( comments_open() || get_comments_number() ) :
-				comments_template();
-			endif;
-
-		endwhile; // End of the loop.
+		get_template_part(
+			'template-parts/hero',
+			null,
+			array(
+				'title'   => get_the_title(),
+				'lead'    => has_excerpt() ? wpautop( wp_kses_post( get_the_excerpt() ) ) : '',
+				'eyebrow' => get_the_date(),
+				'cta'     => false,
+			)
+		);
 		?>
 
-		</main><!-- #main -->
+		<article id="post-<?php the_ID(); ?>" <?php post_class( 'section-block' ); ?>>
+			<div class="wrap entry-content narrow">
+				<?php if ( has_post_thumbnail() ) : ?>
+					<figure class="post-thumbnail card-steel"><?php the_post_thumbnail( 'cpc-photo', array( 'alt' => wp_strip_all_tags( get_the_title() ) ) ); ?></figure>
+				<?php endif; ?>
 
-		<?php get_sidebar(); ?>
+				<?php
+				the_content();
 
-	</div><!-- #primary -->
+				wp_link_pages(
+					array(
+						'before' => '<nav class="page-links" aria-label="' . esc_attr__( 'Páginas', 'cerrajeros-parla' ) . '">',
+						'after'  => '</nav>',
+					)
+				);
+				edit_post_link( __( 'Editar entrada', 'cerrajeros-parla' ), '<p class="edit-link">', '</p>' );
+				?>
+			</div>
+		</article>
+	</main>
+	<?php
+endwhile;
 
-<?php
 get_footer();

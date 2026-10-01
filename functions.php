@@ -1,275 +1,708 @@
 <?php
 /**
- * Susty WP functions and definitions
+ * Parla Cerrajeros CP — theme bootstrap.
  *
- * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ * "Industrial Gold & Steel" theme for cerrajeroparla.com: phone-only
+ * conversion, local SEO, vanilla CSS and native template hierarchy.
  *
- * @package Susty
+ * @package Cerrajeros_Parla
  */
 
-if ( ! function_exists( 'susty_setup' ) ) :
-	/**
-	 * Sets up theme defaults and registers support for various WordPress features.
-	 *
-	 * Note that this function is hooked into the after_setup_theme hook, which
-	 * runs before the init hook. The init hook is too late for some features, such
-	 * as indicating support for post thumbnails.
-	 */
-	function susty_setup() {
-		/*
-		 * Make theme available for translation.
-		 * Translations can be filed in the /languages/ directory.
-		 * If you're building a theme based on The ClassicPress Theme, use a find and replace
-		 * to change 'the-classicpress-theme' to the name of your theme in all the template files.
-		 */
-		load_theme_textdomain( 'the-classicpress-theme', get_template_directory() . '/languages' );
+defined( 'ABSPATH' ) || exit;
 
-		/**
-		 * Add default posts and comments RSS feed links to head.
-		 */
-		add_theme_support( 'automatic-feed-links' );
+/*--------------------------------------------------------------
+# Business data (single source of truth for every template)
+--------------------------------------------------------------*/
+define( 'CPC_VERSION', '2.0.0' );
+define( 'CPC_BRAND', 'Parla Cerrajeros CP' );
+define( 'CPC_PHONE_DISPLAY', '919 93 26 78' );
+define( 'CPC_PHONE_TEL', '+34919932678' );
+define( 'CPC_MAPS_URL', 'https://maps.app.goo.gl/B6aewJE3C5fAn1fb9' );
+define( 'CPC_LOCALITY', 'Parla' );
 
-		/*
-		 * Let WordPress manage the document title.
-		 * By adding theme support, we declare that this theme does not use a
-		 * hard-coded <title> tag in the document head, and expect WordPress to
-		 * provide it for us.
-		 */
-		add_theme_support( 'title-tag' );
-
-		/*
-		 * Enable support for Post Thumbnails on posts and pages.
-		 *
-		 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-		 */
-		add_theme_support( 'post-thumbnails' );
-
-		/**
-		 * This theme uses wp_nav_menu() in two locations.
-		 *
-		 * @link https://developer.wordpress.org/themes/functionality/navigation-menus/
-		 */
-		register_nav_menus(
-			array(
-				'main-menu'   => esc_html__( 'MainMenu', 'the-classicpress-theme' ),
-				'footer-menu' => esc_html__( 'FooterMenu', 'the-classicpress-theme' ),
-			)
-		);
-
-		/**
-		 * Set up the WordPress core custom background feature.
-		 *
-		 * @link https://developer.wordpress.org/themes/functionality/custom-backgrounds/
-		 */
-		add_theme_support(
-			'custom-background',
-			apply_filters(
-				'susty_custom_background_args',
-				array(
-					'default-color' => 'fffefc',
-					'default-image' => '',
-				)
-			)
-		);
-
-		/**
-		 * Add theme support for selective refresh for widgets.
-		 */
-		add_theme_support( 'customize-selective-refresh-widgets' );
-
-		/**
-		 * Add support for core custom logo.
-		 *
-		 * @link https://developer.wordpress.org/themes/functionality/custom-logo/
-		 */
-		add_theme_support(
-			'custom-logo',
-			array(
-				'height'      => 50,
-				'width'       => 250,
-				'flex-width'  => true,
-				'flex-height' => true,
-			)
-		);
-
-		/**
-		 * Add custom stylesheet to TinyMCE editor
-		 */
-		add_editor_style( 'editor-style.css' );
-	}
-endif;
-add_action( 'after_setup_theme', 'susty_setup' );
+/*--------------------------------------------------------------
+# Theme setup
+--------------------------------------------------------------*/
 
 /**
- * Enqueue scripts and styles.
+ * Registers theme supports, menus and image sizes.
  */
-function susty_scripts() {
-	wp_enqueue_style( 'susty-style', get_stylesheet_uri() );
+function cpc_setup() {
+	load_theme_textdomain( 'cerrajeros-parla', get_template_directory() . '/languages' );
+
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-thumbnails' );
+	add_theme_support( 'responsive-embeds' );
+	add_theme_support( 'html5', array( 'search-form', 'gallery', 'caption', 'style', 'script', 'navigation-widgets' ) );
+
+	// The golden Avutarda logo will be uploaded later; until then header.php prints a typographic logo.
+	add_theme_support(
+		'custom-logo',
+		array(
+			'height'      => 64,
+			'width'       => 260,
+			'flex-width'  => true,
+			'flex-height' => true,
+		)
+	);
+
+	register_nav_menus(
+		array(
+			'main-menu'   => __( 'Menú principal', 'cerrajeros-parla' ),
+			'footer-menu' => __( 'Menú legal (pie de página)', 'cerrajeros-parla' ),
+		)
+	);
+
+	// Landing-page photo slots: 4:3, hard crop.
+	add_image_size( 'cpc-photo', 1200, 900, true );
+
+	add_post_type_support( 'page', 'excerpt' );
+
+	// TinyMCE splits content_css on commas, so encode the ones inside the Google Fonts URL.
+	add_editor_style( array( 'editor-style.css', str_replace( ',', '%2C', cpc_fonts_url() ) ) );
+}
+add_action( 'after_setup_theme', 'cpc_setup' );
+
+/**
+ * Removes emoji scripts/styles and other <head> noise.
+ */
+function cpc_clean_head() {
+	remove_action( 'wp_head', 'wp_generator' );
+	remove_action( 'wp_head', 'rsd_link' );
+	remove_action( 'wp_head', 'wlwmanifest_link' );
+	remove_action( 'wp_head', 'wp_shortlink_wp_head', 10 );
+	remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+	remove_action( 'wp_head', 'feed_links_extra', 3 );
+
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	remove_action( 'wp_enqueue_scripts', 'wp_enqueue_emoji_styles' );
+	remove_action( 'admin_enqueue_scripts', 'wp_enqueue_emoji_styles' );
+	remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+	add_filter( 'emoji_svg_url', '__return_false' ); // Also drops the s.w.org dns-prefetch hint.
+}
+add_action( 'after_setup_theme', 'cpc_clean_head' );
+
+/**
+ * Removes the emoji plugin from TinyMCE.
+ *
+ * @param array $plugins TinyMCE plugins.
+ * @return array
+ */
+function cpc_disable_emoji_tinymce( $plugins ) {
+	return is_array( $plugins ) ? array_diff( $plugins, array( 'wpemoji' ) ) : array();
+}
+add_filter( 'tiny_mce_plugins', 'cpc_disable_emoji_tinymce' );
+
+// Phone calls only: no comment or pingback forms anywhere on the site.
+add_filter( 'comments_open', '__return_false', 20 );
+add_filter( 'pings_open', '__return_false', 20 );
+
+/*--------------------------------------------------------------
+# Assets
+--------------------------------------------------------------*/
+
+/**
+ * Google Fonts: Outfit (display) + DM Sans (body).
+ *
+ * @return string
+ */
+function cpc_fonts_url() {
+	return 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Outfit:wght@500;700;900&display=swap';
+}
+
+/**
+ * Enqueues front-end styles and the tiny navigation script.
+ */
+function cpc_assets() {
+	// Null version: WordPress must not append ?ver= to the Google Fonts URL.
+	wp_enqueue_style( 'cpc-fonts', cpc_fonts_url(), array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+	wp_enqueue_style( 'cpc-style', get_template_directory_uri() . '/style.css', array( 'cpc-fonts' ), CPC_VERSION );
+	if ( is_child_theme() ) {
+		wp_enqueue_style( 'cpc-child-style', get_stylesheet_uri(), array( 'cpc-style' ), CPC_VERSION );
+	}
+
+	wp_enqueue_script( 'cpc-navigation', get_template_directory_uri() . '/js/navigation.js', array(), CPC_VERSION, true );
 
 	wp_deregister_script( 'wp-embed' );
-
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		wp_enqueue_script( 'comment-reply' );
-	}
-}
-add_action( 'wp_enqueue_scripts', 'susty_scripts' );
-
-/**
- * Custom template tags for this theme.
- */
-require get_template_directory() . '/inc/template-tags.php';
-
-/**
- * Functions which enhance the theme by hooking into WordPress.
- */
-require get_template_directory() . '/inc/template-functions.php';
-
-/**
- * Customizer additions.
- */
-require get_template_directory() . '/inc/customizer.php';
-
-/**
- * Load Jetpack compatibility file.
- */
-if ( defined( 'JETPACK__VERSION' ) ) {
-	require get_template_directory() . '/inc/jetpack.php';
-}
-
-/**
- * Remove Emoji
- */
-remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-remove_action( 'wp_print_styles', 'print_emoji_styles' );
-
-/**
- * Remove dashicons in frontend for unauthenticated users
- */
-function susty_dequeue_dashicons() {
 	if ( ! is_user_logged_in() ) {
 		wp_deregister_style( 'dashicons' );
 	}
+
+	// Classic content does not need block-editor CSS.
+	if ( ! ( is_singular() && function_exists( 'has_blocks' ) && has_blocks() ) ) {
+		wp_dequeue_style( 'wp-block-library' );
+		wp_dequeue_style( 'wp-block-library-theme' );
+		wp_dequeue_style( 'global-styles' );
+	}
+	wp_dequeue_style( 'classic-theme-styles' );
 }
-add_action( 'wp_enqueue_scripts', 'susty_dequeue_dashicons' );
+add_action( 'wp_enqueue_scripts', 'cpc_assets', 20 );
 
 /**
- * Stylesheet version (cache buster)
+ * Keeps our own cache-busting version when ClassicPress rewrites asset versions.
+ *
+ * @param string $version Asset version.
+ * @param string $type    'script' or 'style'.
+ * @param string $handle  Asset handle.
+ * @return string
  */
-function cp_susty_get_asset_version() {
-	return '20260226';
+function cpc_asset_version( $version, $type, $handle ) {
+	return in_array( $handle, array( 'cpc-style', 'cpc-child-style', 'cpc-navigation' ), true ) ? CPC_VERSION : $version;
+}
+add_filter( 'classicpress_asset_version', 'cpc_asset_version', 10, 3 );
+
+/*--------------------------------------------------------------
+# Business helpers
+--------------------------------------------------------------*/
+
+/**
+ * The tel: URI used by every call button.
+ *
+ * @return string
+ */
+function cpc_phone_href() {
+	return 'tel:' . CPC_PHONE_TEL;
 }
 
 /**
- * Enqueue scripts and styles
+ * Prints a gold call button.
+ *
+ * @param string $location Where the button lives (exposed as data-call for analytics).
+ * @param string $label    Button text. Defaults to "Llamar: 919 93 26 78".
+ * @param string $class    Extra CSS classes.
  */
-function cp_susty_enqueue_assets() {
-	/* Make menu more accessible */
-	wp_enqueue_script(
-		'cp-menu-resize',
-		get_template_directory_uri() . '/js/menu-resize.js',
-		null,
-		cp_susty_get_asset_version(),
+function cpc_call_button( $location, $label = '', $class = '' ) {
+	if ( '' === $label ) {
+		/* translators: %s: phone number. */
+		$label = sprintf( __( 'Llamar: %s', 'cerrajeros-parla' ), CPC_PHONE_DISPLAY );
+	}
+
+	printf(
+		'<a class="%1$s" href="%2$s" data-call="%3$s">%4$s<span>%5$s</span></a>',
+		esc_attr( trim( 'btn-gold ' . $class ) ),
+		esc_url( cpc_phone_href() ),
+		esc_attr( $location ),
+		cpc_icon( 'bolt' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG.
+		esc_html( $label )
 	);
-	/* localize menu script */
+}
+
+/**
+ * The three core services. Each URL resolves to its "servicio-localidad" page.
+ *
+ * @return array[]
+ */
+function cpc_services() {
+	static $services = null;
+
+	if ( null !== $services ) {
+		return $services;
+	}
+
+	$services = array(
+		array(
+			'slug' => 'cambio-de-cerradura-parla',
+			'name' => __( 'Cambio de Cerradura', 'cerrajeros-parla' ),
+			'menu' => __( 'Cambio de cerradura', 'cerrajeros-parla' ),
+			'text' => __( 'Sustitución de cerraduras y bombines para recuperar el control de tu puerta y reforzar su seguridad.', 'cerrajeros-parla' ),
+			'icon' => 'padlock',
+		),
+		array(
+			'slug' => 'instalacion-de-cerrojos-parla',
+			'name' => __( 'Instalación de Cerrojos', 'cerrajeros-parla' ),
+			'menu' => __( 'Cerrojos', 'cerrajeros-parla' ),
+			'text' => __( 'Montaje de cerrojos adicionales en tu puerta para sumar un punto de cierre más.', 'cerrajeros-parla' ),
+			'icon' => 'deadbolt',
+		),
+		array(
+			'slug' => 'reparacion-cierres-metalicos-parla',
+			'name' => __( 'Reparación Cierres Metálicos', 'cerrajeros-parla' ),
+			'menu' => __( 'Cierres metálicos', 'cerrajeros-parla' ),
+			'text' => __( 'Reparación de cierres y persianas metálicas de comercios, locales y garajes.', 'cerrajeros-parla' ),
+			'icon' => 'shutter',
+		),
+	);
+
+	foreach ( $services as $i => $service ) {
+		$page                    = get_page_by_path( $service['slug'] );
+		$services[ $i ]['url']   = $page ? get_permalink( $page ) : home_url( user_trailingslashit( $service['slug'] ) );
+		$services[ $i ]['title'] = $service['name'] . ' ' . CPC_LOCALITY; // The page H1: "servicio localidad".
+	}
+
+	$services = apply_filters( 'cpc_services', $services );
+
+	return $services;
+}
+
+/**
+ * Inline SVG icons (stroke-based, square caps for an industrial look).
+ *
+ * @param string $name  Icon name.
+ * @param string $class Extra CSS classes.
+ * @return string Static, safe SVG markup.
+ */
+function cpc_icon( $name, $class = '' ) {
+	$icons = array(
+		'phone'    => '<path d="M5.2 3.5h3.6l1.7 4.6-2.3 1.6a12 12 0 0 0 6.1 6.1l1.6-2.3 4.6 1.7v3.6a1.7 1.7 0 0 1-1.8 1.7C10.8 20.1 3.9 13.2 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8Z"/>',
+		'bolt'     => '<path d="M13.6 2 4.5 13.4h6.3L9.9 22l9.6-11.6h-6.4L13.6 2Z" fill="currentColor" stroke="none"/>',
+		'padlock'  => '<rect x="4.5" y="10.5" width="15" height="10" rx="1"/><path d="M8 10.5v-3a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/>',
+		'deadbolt' => '<rect x="2.5" y="7" width="11" height="10" rx="1"/><path d="M13.5 10.5h5.5v3h-5.5"/><path d="M21.5 6v12"/><circle cx="8" cy="12" r="1.5"/>',
+		'shutter'  => '<path d="M2.5 4h19"/><path d="M4 4v16.5M20 4v16.5"/><path d="M4 8h16M4 11.5h16M4 15h16"/><path d="M10 18.5h4"/>',
+		'key'      => '<circle cx="7.5" cy="16" r="4"/><path d="M10.4 13.1 20 3.5"/><path d="m16.5 7 3 3M14 9.5l2 2"/>',
+		'pin'      => '<path d="M12 21.5s-7-6.3-7-11.5a7 7 0 0 1 14 0c0 5.2-7 11.5-7 11.5Z"/><circle cx="12" cy="10" r="2.5"/>',
+		'clock'    => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+		'shield'   => '<path d="M12 2.8 4.5 5.6v6c0 4.6 3.2 8.4 7.5 9.6 4.3-1.2 7.5-5 7.5-9.6v-6Z"/><path d="m8.8 12 2.2 2.2 4.2-4.4"/>',
+		'arrow'    => '<path d="M4 12h15"/><path d="m13 6 6 6-6 6"/>',
+		'menu'     => '<path d="M3 6h18M3 12h18M3 18h18"/>',
+		'close'    => '<path d="m5 5 14 14M19 5 5 19"/>',
+	);
+
+	if ( ! isset( $icons[ $name ] ) ) {
+		return '';
+	}
+
+	return sprintf(
+		'<svg class="icon icon-%1$s %2$s" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true" focusable="false">%3$s</svg>',
+		esc_attr( $name ),
+		esc_attr( $class ),
+		$icons[ $name ]
+	);
+}
+
+/**
+ * Prints the logo: the uploaded custom logo, or the typographic "Parla Cerrajeros CP" lockup.
+ *
+ * @param string $context 'header' or 'footer'.
+ */
+function cpc_site_logo( $context = 'header' ) {
+	if ( has_custom_logo() ) {
+		the_custom_logo();
+		return;
+	}
+
+	printf(
+		'<a class="site-logo site-logo--%1$s" href="%2$s" rel="home" aria-label="%3$s"><span class="site-logo__text" aria-hidden="true"><span class="site-logo__top">Parla</span><span class="site-logo__main">Cerrajeros</span></span><span class="site-logo__cp" aria-hidden="true">CP</span></a>',
+		esc_attr( $context ),
+		esc_url( home_url( '/' ) ),
+		/* translators: %s: brand name. */
+		esc_attr( sprintf( __( '%s — Inicio', 'cerrajeros-parla' ), CPC_BRAND ) )
+	);
+}
+
+/**
+ * Main menu fallback: home + the three service landings.
+ */
+function cpc_menu_fallback() {
+	echo '<ul id="primary-menu" class="menu">';
+
+	printf(
+		'<li class="menu-item"><a href="%1$s"%2$s>%3$s</a></li>',
+		esc_url( home_url( '/' ) ),
+		is_front_page() ? ' aria-current="page"' : '',
+		esc_html__( 'Inicio', 'cerrajeros-parla' )
+	);
+
+	foreach ( cpc_services() as $service ) {
+		printf(
+			'<li class="menu-item"><a href="%1$s"%2$s>%3$s</a></li>',
+			esc_url( $service['url'] ),
+			is_page( $service['slug'] ) ? ' aria-current="page"' : '',
+			esc_html( $service['menu'] )
+		);
+	}
+
+	echo '</ul>';
+}
+
+/**
+ * Hero lead text: the page excerpt, or a default call-to-action line.
+ *
+ * @return string HTML.
+ */
+function cpc_get_lead_text() {
+	if ( has_excerpt() ) {
+		return wpautop( wp_kses_post( get_the_excerpt() ) );
+	}
+
+	return '<p>' . esc_html(
+		sprintf(
+			/* translators: 1: locality, 2: phone number. */
+			__( 'Servicio de cerrajería en %1$s las 24 horas, todos los días. Llama al %2$s y cuéntanos qué necesitas.', 'cerrajeros-parla' ),
+			CPC_LOCALITY,
+			CPC_PHONE_DISPLAY
+		)
+	) . '</p>';
+}
+
+/**
+ * Schema.org Locksmith data printed as JSON-LD in header.php.
+ *
+ * @return array
+ */
+function cpc_schema_data() {
+	$data = array(
+		'@context'                  => 'https://schema.org',
+		'@type'                     => 'Locksmith',
+		'name'                      => CPC_BRAND,
+		'url'                       => home_url( '/' ),
+		'telephone'                 => CPC_PHONE_TEL,
+		'priceRange'                => '€€',
+		'address'                   => array(
+			'@type'           => 'PostalAddress',
+			'addressLocality' => 'Parla',
+			'addressRegion'   => 'Madrid',
+			'addressCountry'  => 'ES',
+		),
+		'openingHoursSpecification' => array(
+			'@type'     => 'OpeningHoursSpecification',
+			'dayOfWeek' => array( 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ),
+			'opens'     => '00:00',
+			'closes'    => '23:59',
+		),
+		'areaServed'                => array( 'Parla', 'Madrid Sur' ),
+		'hasMap'                    => CPC_MAPS_URL,
+	);
+
+	// Once the Avutarda logo is uploaded it becomes the business logo/image automatically.
+	if ( has_custom_logo() ) {
+		$logo = wp_get_attachment_image_url( get_theme_mod( 'custom_logo' ), 'full' );
+		if ( $logo ) {
+			$data['logo']  = $logo;
+			$data['image'] = $logo;
+		}
+	}
+
+	return apply_filters( 'cpc_schema_data', $data );
+}
+
+/*--------------------------------------------------------------
+# Landing pages: two content blocks + two photo slots
+--------------------------------------------------------------*/
+
+/**
+ * Splits the current post content into the two copy blocks of page.php.
+ *
+ * The editor decides where block 2 starts with the "Read More" tag (<!--more-->).
+ * Without it, the content is split automatically at a top-level element near the
+ * middle, preferring an <h2>/<h3>. The_content filters run only once.
+ *
+ * @return string[] Two HTML strings; the second may be empty.
+ */
+function cpc_get_content_parts() {
+	$content = apply_filters( 'the_content', get_the_content() );
+	$content = str_replace( ']]>', ']]&gt;', $content );
+
+	// On singular views WordPress replaces <!--more--> with <span id="more-ID"></span>.
+	$marker = '#(?:<p>\s*)?<span id="more-\d+"></span>(?:\s*</p>)?#i';
+	if ( preg_match( $marker, $content ) ) {
+		$parts = preg_split( $marker, $content, 2 );
+		return array( force_balance_tags( trim( $parts[0] ) ), force_balance_tags( trim( $parts[1] ) ) );
+	}
+
+	return cpc_split_html( $content );
+}
+
+/**
+ * Splits rendered HTML in two at a top-level element boundary, never inside an element.
+ *
+ * @param string $html Rendered HTML.
+ * @return string[] Two HTML strings; the second is empty when no safe boundary exists.
+ */
+function cpc_split_html( $html ) {
+	$html = trim( (string) $html );
+	if ( '' === $html ) {
+		return array( '', '' );
+	}
+
+	$void  = array( 'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr' );
+	$attrs = '(?:[^>"\']|"[^"]*"|\'[^\']*\')*';
+	$regex = '#<!--.*?-->|<(script|style|textarea)\b' . $attrs . '>.*?</\1\s*>|<(/?)([a-z][a-z0-9:-]*)\b(' . $attrs . ')>#is';
+
+	preg_match_all( $regex, $html, $tokens, PREG_SET_ORDER | PREG_OFFSET_CAPTURE );
+
+	// Byte offsets where a top-level element starts => its tag name.
+	$cuts  = array();
+	$depth = 0;
+	foreach ( $tokens as $token ) {
+		$offset = $token[0][1];
+
+		if ( 0 === strpos( $token[0][0], '<!--' ) ) {
+			continue;
+		}
+
+		if ( isset( $token[1] ) && '' !== $token[1][0] ) { // <script>, <style>, <textarea>: atomic.
+			if ( 0 === $depth && $offset > 0 ) {
+				$cuts[ $offset ] = strtolower( $token[1][0] );
+			}
+			continue;
+		}
+
+		$name = strtolower( $token[3][0] );
+
+		if ( '/' === $token[2][0] ) {
+			$depth = max( 0, $depth - 1 );
+			continue;
+		}
+
+		if ( 0 === $depth && $offset > 0 ) {
+			$cuts[ $offset ] = $name;
+		}
+
+		$self_closing = '/' === substr( rtrim( $token[4][0] ), -1 );
+		if ( ! in_array( $name, $void, true ) && ! $self_closing ) {
+			++$depth;
+		}
+	}
+
+	if ( empty( $cuts ) ) {
+		return array( $html, '' );
+	}
+
+	// Visible text length before each candidate cut.
+	$before = array();
+	$text   = 0;
+	$prev   = 0;
+	foreach ( array_keys( $cuts ) as $offset ) {
+		$text            += strlen( wp_strip_all_tags( substr( $html, $prev, $offset - $prev ) ) );
+		$before[ $offset ] = $text;
+		$prev             = $offset;
+	}
+	$total = $text + strlen( wp_strip_all_tags( substr( $html, $prev ) ) );
+
+	$best       = null;
+	$best_score = PHP_INT_MAX;
+	foreach ( $cuts as $offset => $name ) {
+		if ( 0 === $before[ $offset ] ) {
+			continue; // Block 1 must contain some text.
+		}
+
+		$ratio = $total > 0 ? $before[ $offset ] / $total : $offset / strlen( $html );
+		$score = abs( 0.5 - $ratio );
+		if ( in_array( $name, array( 'h2', 'h3' ), true ) ) {
+			$score -= 0.15; // A heading close to the middle beats a paragraph exactly in the middle.
+		}
+
+		if ( $score < $best_score ) {
+			$best       = $offset;
+			$best_score = $score;
+		}
+	}
+
+	if ( null === $best ) {
+		return array( $html, '' );
+	}
+
+	return array( rtrim( substr( $html, 0, $best ) ), substr( $html, $best ) );
+}
+
+/**
+ * Attachment ID for a photo slot. Slot 1 falls back to the featured image.
+ *
+ * @param int      $slot    1 or 2.
+ * @param int|null $post_id Page ID.
+ * @return int
+ */
+function cpc_get_photo_id( $slot, $post_id = null ) {
+	$post_id = $post_id ? $post_id : get_the_ID();
+	$id      = absint( get_post_meta( $post_id, '_cpc_photo_' . $slot, true ) );
+
+	if ( ! $id && 1 === $slot ) {
+		$id = (int) get_post_thumbnail_id( $post_id );
+	}
+
+	return ( $id && wp_attachment_is_image( $id ) ) ? $id : 0;
+}
+
+/**
+ * Prints the inside of a photo slot: the image, or a reserved placeholder plate.
+ *
+ * @param int    $slot 1 or 2.
+ * @param string $alt  Alt text for the image.
+ */
+function cpc_photo_slot( $slot, $alt ) {
+	$id = cpc_get_photo_id( $slot );
+
+	if ( $id ) {
+		echo wp_get_attachment_image(
+			$id,
+			'cpc-photo',
+			false,
+			array(
+				'alt'      => $alt,
+				'class'    => 'photo-slot__img',
+				'loading'  => 'lazy',
+				'decoding' => 'async',
+				'sizes'    => '(min-width: 900px) 560px, 100vw',
+			)
+		);
+		return;
+	}
+	?>
+	<div class="photo-slot__placeholder">
+		<?php echo cpc_icon( 1 === $slot ? 'padlock' : 'key' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+		<span class="photo-slot__brand" aria-hidden="true">Parla Cerrajeros <b>CP</b></span>
+		<?php if ( current_user_can( 'edit_post', get_the_ID() ) ) : ?>
+			<span class="photo-slot__hint">
+				<?php
+				/* translators: %d: photo slot number. */
+				printf( esc_html__( 'Hueco de foto %d reservado: asígnala en la caja «Fotos de la landing» del editor.', 'cerrajeros-parla' ), (int) $slot );
+				?>
+			</span>
+		<?php endif; ?>
+	</div>
+	<?php
+}
+
+/**
+ * Uses the legal-text template for the privacy policy page unless another template was chosen.
+ *
+ * @param string $template Template path.
+ * @return string
+ */
+function cpc_privacy_page_template( $template ) {
+	$page_id = get_queried_object_id();
+
+	if ( $page_id && (int) get_option( 'wp_page_for_privacy_policy' ) === $page_id && ! get_page_template_slug( $page_id ) ) {
+		$legal = locate_template( 'template-legal.php' );
+		if ( $legal ) {
+			return $legal;
+		}
+	}
+
+	return $template;
+}
+add_filter( 'page_template', 'cpc_privacy_page_template' );
+
+/*--------------------------------------------------------------
+# Admin: photo slots meta box + "servicio-localidad" check
+--------------------------------------------------------------*/
+
+/**
+ * Adds the photo meta box to pages that use the landing layout.
+ *
+ * @param WP_Post $post Page being edited.
+ */
+function cpc_add_photo_meta_box( $post ) {
+	if ( 'page' === get_option( 'show_on_front' ) && (int) get_option( 'page_on_front' ) === $post->ID ) {
+		return; // front-page.php has its own layout.
+	}
+
+	add_meta_box( 'cpc-photos', __( 'Fotos de la landing (2 huecos)', 'cerrajeros-parla' ), 'cpc_render_photo_meta_box', 'page', 'side' );
+}
+add_action( 'add_meta_boxes_page', 'cpc_add_photo_meta_box' );
+
+/**
+ * Renders the photo meta box.
+ *
+ * @param WP_Post $post Page being edited.
+ */
+function cpc_render_photo_meta_box( $post ) {
+	wp_nonce_field( 'cpc_save_photos', 'cpc_photos_nonce' );
+
+	foreach ( array( 1, 2 ) as $slot ) {
+		$id      = absint( get_post_meta( $post->ID, '_cpc_photo_' . $slot, true ) );
+		$preview = $id ? wp_get_attachment_image_url( $id, 'medium' ) : '';
+		?>
+		<div class="cpc-photo-field" style="margin-bottom:16px">
+			<p style="margin:0 0 6px"><strong>
+				<?php
+				/* translators: %d: photo slot number. */
+				printf( esc_html__( 'Foto %d', 'cerrajeros-parla' ), (int) $slot );
+				?>
+			</strong>
+			<?php if ( 1 === $slot ) : ?>
+				<br><span class="description"><?php esc_html_e( 'Vacía = se usa la imagen destacada.', 'cerrajeros-parla' ); ?></span>
+			<?php endif; ?>
+			</p>
+			<div class="cpc-photo-preview">
+				<?php if ( $preview ) : ?>
+					<img src="<?php echo esc_url( $preview ); ?>" alt="" style="max-width:100%;height:auto;display:block;margin-bottom:6px">
+				<?php endif; ?>
+			</div>
+			<input type="hidden" name="cpc_photo_<?php echo (int) $slot; ?>" value="<?php echo $id ? (int) $id : ''; ?>">
+			<button type="button" class="button cpc-photo-select"><?php esc_html_e( 'Elegir imagen', 'cerrajeros-parla' ); ?></button>
+			<button type="button" class="button-link cpc-photo-remove" <?php echo $id ? '' : 'hidden'; ?>><?php esc_html_e( 'Quitar', 'cerrajeros-parla' ); ?></button>
+		</div>
+		<?php
+	}
+
+	// SEO pattern check: H1 "Servicio Localidad" and slug /servicio-localidad.
+	$title    = trim( wp_strip_all_tags( $post->post_title ) );
+	$expected = sanitize_title( $title );
+	$h1_ok    = (bool) preg_match( '/\b' . preg_quote( CPC_LOCALITY, '/' ) . '$/u', $title );
+	$slug_ok  = '' !== $post->post_name && $expected === $post->post_name;
+	?>
+	<hr>
+	<p style="margin:0 0 6px"><strong><?php esc_html_e( 'Patrón SEO servicio-localidad', 'cerrajeros-parla' ); ?></strong></p>
+	<p style="margin:0 0 4px">
+		<?php echo $h1_ok ? '&#10004;' : '&#10008;'; ?>
+		<?php
+		/* translators: %s: locality. */
+		printf( esc_html__( 'El título (H1) termina en «%s»', 'cerrajeros-parla' ), esc_html( CPC_LOCALITY ) );
+		?>
+	</p>
+	<p style="margin:0">
+		<?php echo $slug_ok ? '&#10004;' : '&#10008;'; ?>
+		<?php esc_html_e( 'La URL coincide con el título', 'cerrajeros-parla' ); ?>
+		<?php if ( ! $slug_ok && '' !== $expected ) : ?>
+			<br><code>/<?php echo esc_html( $expected ); ?>/</code>
+		<?php endif; ?>
+	</p>
+	<p class="description"><?php esc_html_e( 'Solo aplica a las landings de servicio (no a textos legales).', 'cerrajeros-parla' ); ?></p>
+	<?php
+}
+
+/**
+ * Saves the photo slot attachment IDs.
+ *
+ * @param int $post_id Page ID.
+ */
+function cpc_save_photo_meta( $post_id ) {
+	if ( ! isset( $_POST['cpc_photos_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cpc_photos_nonce'] ) ), 'cpc_save_photos' ) ) {
+		return;
+	}
+	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	foreach ( array( 1, 2 ) as $slot ) {
+		$key = 'cpc_photo_' . $slot;
+		$id  = isset( $_POST[ $key ] ) ? absint( $_POST[ $key ] ) : 0;
+
+		if ( $id && wp_attachment_is_image( $id ) ) {
+			update_post_meta( $post_id, '_cpc_photo_' . $slot, $id );
+		} else {
+			delete_post_meta( $post_id, '_cpc_photo_' . $slot );
+		}
+	}
+}
+add_action( 'save_post_page', 'cpc_save_photo_meta' );
+
+/**
+ * Loads the media picker on the page editor.
+ *
+ * @param string $hook Admin page hook.
+ */
+function cpc_admin_assets( $hook ) {
+	$screen = get_current_screen();
+	if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) || ! $screen || 'page' !== $screen->post_type ) {
+		return;
+	}
+
+	wp_enqueue_media();
+	wp_enqueue_script( 'cpc-admin-photos', get_template_directory_uri() . '/js/admin-photos.js', array( 'jquery' ), CPC_VERSION, true );
 	wp_localize_script(
-		'cp-menu-resize',
-		'cp_menu_object',
+		'cpc-admin-photos',
+		'cpcPhotos',
 		array(
-			'Search'      => esc_html__( 'Search', 'the-classicpress-theme' ),
-			'SearchFor'   => esc_html__( 'Search for...', 'the-classicpress-theme' ),
-			'OpenSubMenu' => esc_html__( 'Click to open sub-menu.', 'the-classicpress-theme' ),
+			'title'  => __( 'Elegir foto para la landing', 'cerrajeros-parla' ),
+			'button' => __( 'Usar esta foto', 'cerrajeros-parla' ),
 		)
 	);
 }
-add_action( 'wp_enqueue_scripts', 'cp_susty_enqueue_assets' );
-
-/**
- * Add widgets to sidebar and footer
- */
-if ( function_exists( 'register_sidebar' ) ) {
-	register_sidebar(
-		array(
-			'id'            => 'blog-sidebar',
-			'name'          => esc_html__( 'Blog Sidebar', 'the-classicpress-theme' ),
-			'before_widget' => '<div id="%1$s" class="widget-container %2$s">',
-			'after_widget'  => '</div>',
-			'before_title'  => '<h3 class="widget-title">',
-			'after_title'   => '</h3>',
-		)
-	);
-	register_sidebar(
-		array(
-			'id'            => 'main-sidebar',
-			'name'          => esc_html__( 'Main Sidebar', 'the-classicpress-theme' ),
-			'before_widget' => '<div id="%1$s" class="widget-container %2$s">',
-			'after_widget'  => '</div>',
-			'before_title'  => '<h3 class="widget-title">',
-			'after_title'   => '</h3>',
-		)
-	);
-	register_sidebar(
-		array(
-			'id'            => 'homepage',
-			'name'          => esc_html__( 'Homepage', 'the-classicpress-theme' ),
-			'before_widget' => '<div id="%1$s" class="widget-container %2$s">',
-			'after_widget'  => '</div>',
-			'before_title'  => '<h3 class="widget-title">',
-			'after_title'   => '</h3>',
-		)
-	);
-	register_sidebar(
-		array(
-			'id'            => 'footer',
-			'name'          => esc_html__( 'Footer', 'the-classicpress-theme' ),
-			'before_widget' => '<div id="%1$s" class="widget-container %2$s">',
-			'after_widget'  => '</div>',
-			'before_title'  => '<h3 class="widget-title">',
-			'after_title'   => '</h3>',
-		)
-	);
-}
-
-/**
- * Remove empty paragraph tags
- */
-function cp_remove_empty_p( $content ) {
-	$content = force_balance_tags( $content );
-	return preg_replace( '#<p>\s*+(<br\s*/*>)?\s*</p>#i', '', $content );
-}
-add_filter( 'the_content', 'cp_remove_empty_p', 20, 1 );
-
-/**
- * Add excerpts to pages
- */
-add_post_type_support( 'page', 'excerpt' );
-
-/**
- * Simplify blog detection
- */
-function is_blog() {
-	return ( is_archive() || is_author() || is_category() || is_home() || is_tag() ) && 'post' == get_post_type();
-}
-
-/**
- * Set our own version string for the theme's stylesheet
- */
-function cp_susty_override_style_css_version( $version, $type, $handle ) {
-	if ( $type !== 'style' || $handle !== 'susty-style' ) {
-		return $version;
-	}
-	return cp_susty_get_asset_version();
-}
-add_filter( 'classicpress_asset_version', 'cp_susty_override_style_css_version', 10, 3 );
-
-/**
- * Add the page slug as a class to the <body>
- * Gives greater flexibility for styling
- */
-function cp_add_page_slug_body_class( $classes ) {
-	global $post;
-	if ( isset( $post ) ) {
-		$classes[] = 'page-' . $post->post_name;
-	}
-	return $classes;
-}
-add_filter( 'body_class', 'cp_add_page_slug_body_class' );
+add_action( 'admin_enqueue_scripts', 'cpc_admin_assets' );

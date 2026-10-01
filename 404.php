@@ -1,55 +1,34 @@
 <?php
 /**
- * The template for displaying 404 pages (not found)
+ * 404: page not found, with the three services and the call button.
  *
- * @link https://codex.wordpress.org/Creating_an_Error_404_Page
- *
- * @package Susty
+ * @package Cerrajeros_Parla
  */
 
 get_header();
 ?>
+<main id="content" class="site-main">
+	<?php
+	get_template_part(
+		'template-parts/hero',
+		null,
+		array(
+			'title'   => __( 'Página no encontrada', 'cerrajeros-parla' ),
+			'lead'    => '<p>' . esc_html__( 'Esta dirección no existe o ha cambiado. Si necesitas un cerrajero en Parla, llámanos ahora o elige un servicio.', 'cerrajeros-parla' ) . '</p>',
+			'eyebrow' => __( 'Error 404', 'cerrajeros-parla' ),
+		)
+	);
+	?>
 
-	<div id="primary">
-		<main id="main">
-
-			<section>
-				<p><?php esc_html_e( 'It looks like nothing was found at this location. Maybe try one of the links below or a search?', 'the-classicpress-theme' ); ?></p>
-
-				<?php
-				get_search_form();
-
-				the_widget( 'WP_Widget_Recent_Posts' );
-				?>
-
-				<div class="widget widget_categories">
-					<h2 class="widget-title"><?php esc_html_e( 'Most Used Categories', 'the-classicpress-theme' ); ?></h2>
-					<ul>
-						<?php
-						wp_list_categories(
-							array(
-								'orderby'    => 'count',
-								'order'      => 'DESC',
-								'show_count' => 1,
-								'title_li'   => '',
-								'number'     => 10,
-							)
-						);
-						?>
-					</ul>
-				</div><!-- .widget -->
-
-				<?php
-				/* translators: %1$s: smiley */
-				$susty_wp_archive_content = '<p>' . sprintf( esc_html__( 'Try looking in the monthly archives. %1$s', 'the-classicpress-theme' ), convert_smilies( ':)' ) ) . '</p>';
-				the_widget( 'WP_Widget_Archives', 'dropdown=1', "after_title=</h2>$susty_wp_archive_content" );
-
-				the_widget( 'WP_Widget_Tag_Cloud' );
-				?>
-			</section>
-
-		</main><!-- #main -->
-	</div><!-- #primary -->
-
+	<section class="section-block" aria-labelledby="servicios-404">
+		<div class="wrap">
+			<header class="section-head">
+				<p class="section-kicker"><?php esc_html_e( 'Servicios', 'cerrajeros-parla' ); ?></p>
+				<h2 id="servicios-404"><?php esc_html_e( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ); ?></h2>
+			</header>
+			<?php get_template_part( 'template-parts/services-grid' ); ?>
+		</div>
+	</section>
+</main>
 <?php
 get_footer();

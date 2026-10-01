@@ -1,71 +1,86 @@
 <?php
 /**
- * The template for displaying the footer
+ * Closing CTA band, footer (services, contact, Google Maps), legal row and mobile call bar.
  *
- * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
- *
- * @package Susty
+ * @package Cerrajeros_Parla
  */
 
 ?>
+<section class="cta-band" aria-labelledby="cta-band-title">
+	<div class="cta-band__inner">
+		<div class="cta-band__copy">
+			<p class="cta-band__eyebrow"><?php esc_html_e( 'Cerrajero urgente en Parla', 'cerrajeros-parla' ); ?></p>
+			<h2 id="cta-band-title"><?php esc_html_e( '¿Puerta cerrada, cerradura rota o cierre atascado?', 'cerrajeros-parla' ); ?></h2>
+			<p><?php esc_html_e( 'Llámanos a cualquier hora: atendemos por teléfono las 24 horas, todos los días.', 'cerrajeros-parla' ); ?></p>
+		</div>
+		<?php cpc_call_button( 'cta-band', CPC_PHONE_DISPLAY, 'btn-xl' ); ?>
+	</div>
+</section>
 
+<footer id="colophon" class="site-footer">
+	<div class="site-footer__grid">
+		<div class="footer-col footer-col--brand">
+			<?php cpc_site_logo( 'footer' ); ?>
+			<p><?php esc_html_e( 'Cerrajeros urgentes en Parla (Madrid): cambio de cerraduras, instalación de cerrojos y reparación de cierres metálicos.', 'cerrajeros-parla' ); ?></p>
+		</div>
+
+		<nav class="footer-col" aria-labelledby="footer-services-title">
+			<h2 id="footer-services-title" class="footer-title"><?php esc_html_e( 'Servicios', 'cerrajeros-parla' ); ?></h2>
+			<ul class="footer-list">
+				<?php foreach ( cpc_services() as $cpc_service ) : ?>
+					<li><a href="<?php echo esc_url( $cpc_service['url'] ); ?>"><?php echo esc_html( $cpc_service['title'] ); ?></a></li>
+				<?php endforeach; ?>
+			</ul>
+		</nav>
+
+		<div class="footer-col">
+			<h2 class="footer-title"><?php esc_html_e( 'Contacto', 'cerrajeros-parla' ); ?></h2>
+			<ul class="footer-list footer-contact">
+				<li>
+					<?php echo cpc_icon( 'phone' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<a class="footer-phone" href="<?php echo esc_url( cpc_phone_href() ); ?>" data-call="footer"><?php echo esc_html( CPC_PHONE_DISPLAY ); ?></a>
+				</li>
+				<li>
+					<?php echo cpc_icon( 'clock' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<span><?php esc_html_e( 'Abierto 24 horas, todos los días', 'cerrajeros-parla' ); ?></span>
+				</li>
+				<li>
+					<?php echo cpc_icon( 'pin' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+					<span>
+						<?php esc_html_e( 'Parla (Madrid) y Madrid Sur', 'cerrajeros-parla' ); ?><br>
+						<a href="<?php echo esc_url( CPC_MAPS_URL ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Ver en Google Maps', 'cerrajeros-parla' ); ?><span class="screen-reader-text"> <?php esc_html_e( '(se abre en una pestaña nueva)', 'cerrajeros-parla' ); ?></span></a>
+					</span>
+				</li>
+			</ul>
+		</div>
 	</div>
 
-	<footer id="colophon">
-		<div class="classic">
-			<div class="footerleft">
-				<?php if ( is_active_sidebar( 'footer' ) ) { ?>
-					<div class="footer-widgets">
-						<?php dynamic_sidebar( 'footer' ); ?>
-					</div>
-				<?php } else { ?>
-					<a id="footer-logo" href="<?php echo esc_url( home_url() ); ?>"><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/images/classicpress-logo-feather-white.svg' ); ?>" alt="<?php esc_attr_e( 'ClassicPress feather logo', 'the-classicpress-theme' ); ?>" width="90"></a>
-					<div class="registration">
-						<p><?php esc_html_e( 'The ClassicPress project is under the direction of The ClassicPress Initiative, a nonprofit organization registered under section 501(c)(3) of the United States IRS code.', 'the-classicpress-theme' ); ?></p>
-						<ul class="social-menu">
-							<li><a href="https://forums.classicpress.net" target="_blank" title="<?php esc_attr_e( 'Forums', 'the-classicpress-theme' ); ?>" rel="noreferrer noopener"><i class="cpicon-discourse"></i><span class="screen-reader-text"><?php esc_html_e( 'Support forums', 'the-classicpress-theme' ); ?></span></a></li>
-							<li><a href="https://classicpress.zulipchat.com/register/" target="_blank" title="<?php esc_attr_e( 'Zulip', 'the-classicpress-theme' ); ?>" rel="noreferrer noopener"><i class="cpicon-zulip"></i><span class="screen-reader-text"><?php esc_html_e( 'Join on Zulip Chat', 'the-classicpress-theme' ); ?></span></a></li>
-							<li><a href="https://github.com/ClassicPress" target="_blank" title="<?php esc_attr_e( 'GitHub', 'the-classicpress-theme' ); ?>" rel="noreferrer noopener"><i class="cpicon-github"></i><span class="screen-reader-text"><?php esc_html_e( 'Visit GitHub', 'the-classicpress-theme' ); ?></span></a></li>
-							<li><a href="https://twitter.com/GetClassicPress" target="_blank" title="<?php esc_attr_e( 'Twitter', 'the-classicpress-theme' ); ?>" rel="noreferrer noopener"><i class="cpicon-twitter"></i><span class="screen-reader-text"><?php esc_html_e( 'Follow on Twitter', 'the-classicpress-theme' ); ?></span></a></li>
-							<li><a href="https://www.facebook.com/GetClassicPress" target="_blank" title="<?php esc_attr_e( 'Facebook', 'the-classicpress-theme' ); ?>" rel="noreferrer noopener"><i class="cpicon-facebook-f"></i><span class="screen-reader-text"><?php esc_html_e( 'Like on Facebook', 'the-classicpress-theme' ); ?></span></a></li>
-						</ul>
-					</div>
-				<?php } ?>
-			</div>
-			<?php if ( has_nav_menu( 'footer-menu' ) ) { ?>
-				<div class="footerright">
-					<?php
-					wp_nav_menu(
-						array(
-							'theme_location' => 'footer-menu',
-							'depth'          => 1,
-							'menu_id'        => 'footmenu',
-							'menu_class'     => 'nav',
-						)
-					);
-					?>
-				</div>
-			<?php } ?>
+	<div class="site-footer__legal">
+		<div class="site-footer__legal-inner">
+			<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php echo esc_html( CPC_BRAND ); ?></p>
+			<?php
+			if ( has_nav_menu( 'footer-menu' ) ) {
+				wp_nav_menu(
+					array(
+						'theme_location'       => 'footer-menu',
+						'container'            => 'nav',
+						'container_class'      => 'legal-nav',
+						'container_aria_label' => __( 'Información legal', 'cerrajeros-parla' ),
+						'menu_class'           => 'legal-menu',
+						'depth'                => 1,
+						'item_spacing'         => 'discard',
+					)
+				);
+			} elseif ( function_exists( 'the_privacy_policy_link' ) ) {
+				the_privacy_policy_link( '<nav class="legal-nav"><ul class="legal-menu"><li>', '</li></ul></nav>' );
+			}
+			?>
 		</div>
-	</footer>
-	<footer id="legal">
-		<div class="cplegal">
-			<div class="cpcopyright">
-				<?php /* translators: 1: year, 2: site title. */ ?>
-				<p><?php printf( esc_html( '&copy; %1$s %2$s.', 'the-classicpress-theme' ), esc_html( gmdate( 'Y' ) ), esc_html( get_bloginfo( 'name' ) ) ); ?> <?php esc_html_e( 'All Rights Reserved.', 'the-classicpress-theme' ); ?></p>
-			</div>
-			<div class="cppolicy">
-				<?php if ( ! empty( get_privacy_policy_url() ) ) { ?>
-					<p><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>"><?php esc_html_e( 'Privacy Policy', 'the-classicpress-theme' ); ?></a></p>
-				<?php } ?>
-			</div>
-		</div>
-	</footer>
+	</div>
+</footer>
 
-</div>
+<?php get_template_part( 'template-parts/sticky-call' ); ?>
 
 <?php wp_footer(); ?>
-
 </body>
-
 </html>

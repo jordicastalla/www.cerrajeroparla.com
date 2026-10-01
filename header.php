@@ -1,131 +1,82 @@
 <?php
 /**
- * The header for our theme
+ * Site header: Forge Black bar, typographic logo, live status badge and call trigger.
  *
- * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
- *
- * @package Susty
+ * @package Cerrajeros_Parla
  */
+
 ?>
 <!doctype html>
-<html <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?> class="no-js">
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="theme-color" content="#111827">
+	<script>document.documentElement.className = document.documentElement.className.replace( 'no-js', 'js' );</script>
 
-	<link rel="profile" href="http://gmpg.org/xfn/11">
-	<link rel="preload" href="<?php echo esc_url( get_template_directory_uri() . '/fonts/source-sans-pro-v12-latin-600.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
-	<link rel="preload" href="<?php echo esc_url( get_template_directory_uri() . '/fonts/source-sans-pro-v12-latin-regular.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
-	<link rel="preload" href="<?php echo esc_url( get_template_directory_uri() . '/fonts/source-sans-pro-v12-latin-italic.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
+	<!-- Google Fonts: Outfit & DM Sans (stylesheet enqueued in functions.php) -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 	<?php wp_head(); ?>
+
+	<!-- Schema.org LocalBusiness / Locksmith -->
+	<script type="application/ld+json"><?php echo wp_json_encode( cpc_schema_data(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ); ?></script>
 </head>
 
 <body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
+<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Saltar al contenido', 'cerrajeros-parla' ); ?></a>
 
-<div id="page">
-	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'the-classicpress-theme' ); ?></a>
+<header id="masthead" class="site-header">
+	<div class="topbar">
+		<div class="topbar__inner">
+			<p class="status-badge">
+				<span class="status-dot" aria-hidden="true"></span>
+				<?php esc_html_e( 'Cerrajero libre en Parla', 'cerrajeros-parla' ); ?>
+			</p>
+			<p class="topbar__meta">
+				<?php echo cpc_icon( 'clock' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+				<?php esc_html_e( 'Servicio 24 h · Parla y Madrid Sur', 'cerrajeros-parla' ); ?>
+			</p>
+		</div>
+	</div>
 
-	<?php
-	if ( is_front_page() ) {
-		echo '<section class="home-hero-container">';
-	}
-	?>
-
-	<header id="masthead">
-		<div id="inner-header">
-			<span class="logo" role="banner">
-				
-				<?php
-				// Custom logo
-				if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {
-					the_custom_logo();
-				} else {
-					echo '<a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html( get_bloginfo( 'name' ) ) . '</a>';
-				}
-				?>
-
-			</span>
-
-			<?php if ( has_nav_menu( 'main-menu' ) ) { ?>
-				<nav id="site-navigation" class="main-navigation nav--toggle-sub nav--toggle-small" aria-label="<?php esc_attr_e( 'Main menu', 'the-classicpress-theme' ); ?>">
-	
-					<?php
-					wp_nav_menu(
-						array(
-							'theme_location' => 'main-menu',
-							'depth'          => 2,
-							'menu_id'        => 'primary-menu', /*keeping original id so nav css and js still works*/
-						)
-					);
-					?>
-	
-				</nav><!-- #site-navigation -->
-			<?php } ?>
+	<div class="site-header__bar">
+		<div class="site-branding">
+			<?php cpc_site_logo( 'header' ); ?>
 		</div>
 
-		<?php if ( has_nav_menu( 'main-menu' ) ) { ?>
-			<button id="menu-toggle" class="menu-toggle" type="button" aria-haspopup="true" aria-controls="site-navigation" aria-expanded="false" tabindex="0">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/images/baseline-menu-24px.svg' ); ?>" alt="Menu" width="32" height="32">
-				<span id="menu-toggle-text" class="screen-reader-text"><?php esc_html_e( 'Menu', 'the-classicpress-theme' ); ?></span>
+		<nav id="site-navigation" class="main-nav" aria-label="<?php esc_attr_e( 'Menú principal', 'cerrajeros-parla' ); ?>">
+			<?php
+			wp_nav_menu(
+				array(
+					'theme_location' => 'main-menu',
+					'container'      => false,
+					'menu_id'        => 'primary-menu',
+					'menu_class'     => 'menu',
+					'depth'          => 2,
+					'fallback_cb'    => 'cpc_menu_fallback',
+				)
+			);
+			?>
+		</nav>
+
+		<div class="site-header__actions">
+			<?php /* translators: %s: phone number. */ ?>
+			<a class="btn-gold header-call" href="<?php echo esc_url( cpc_phone_href() ); ?>" data-call="header" aria-label="<?php echo esc_attr( sprintf( __( 'Llamar al %s, urgencias 24 horas', 'cerrajeros-parla' ), CPC_PHONE_DISPLAY ) ); ?>">
+				<?php echo cpc_icon( 'phone' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+				<span class="header-call__text">
+					<span class="header-call__label"><?php esc_html_e( 'Urgencias 24 h', 'cerrajeros-parla' ); ?></span>
+					<span class="header-call__number"><?php echo esc_html( CPC_PHONE_DISPLAY ); ?></span>
+				</span>
+			</a>
+
+			<button class="nav-toggle" type="button" aria-controls="site-navigation" aria-expanded="false">
+				<?php echo cpc_icon( 'menu', 'nav-toggle__open' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+				<?php echo cpc_icon( 'close', 'nav-toggle__close' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+				<span class="screen-reader-text"><?php esc_html_e( 'Menú', 'cerrajeros-parla' ); ?></span>
 			</button>
-
-			<button id="menu-toggle-close" class="menu-toggle close" type="button" aria-haspopup="true" aria-controls="site-navigation" aria-expanded="true" tabindex="0">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/images/baseline-close-24px.svg' ); ?>" alt="Close menu" width="32" height="32">
-				<span id="menu-toggle-close-text" class="menu-toggle-text screen-reader-text"><?php esc_html_e( 'Close menu', 'the-classicpress-theme' ); ?></span>
-			</button>
-		<?php } ?>
-	</header>
-	<?php
-	if ( is_front_page() ) {
-		echo '</section><!-- .home-hero-container -->';
-	}
-	?>
-
-	<?php if ( is_front_page() ) { ?>
-		<?php if ( is_active_sidebar( 'homepage' ) ) { ?>
-			<div id="homepage-widgets-container">
-				<div class="homepage-widgets">
-					<div class="homepage-widgets-inner">
-						<?php dynamic_sidebar( 'homepage' ); ?>
-					</div>
-				</div>
-			</div>
-		<?php } ?>
-	<?php } ?>
-
-	<?php
-	if ( ! is_front_page() && ! is_single() ) {
-			echo '<header id="page-title">';
-		if ( is_post_type_archive() ) {
-			echo '<h1>';
-			post_type_archive_title();
-			echo '</h1>';
-		} elseif ( is_blog() ) {
-			echo '<h1>';
-			if ( is_home() ) {
-				$blog_page_id = get_option( 'page_for_posts' );
-				if ( $blog_page_id && ( ! empty( get_the_title( $blog_page_id ) ) ) ) {
-					echo esc_html( get_the_title( $blog_page_id ) );
-				} else {
-					esc_html_e( 'News', 'the-classicpress-theme' );
-				}
-			} else {
-				the_archive_title();
-			}
-			echo '</h1>';
-		} elseif ( is_search() ) {
-			echo '<h1>';
-			esc_html_e( 'Search Results', 'the-classicpress-theme' );
-			echo '</h1>';
-		} elseif ( is_404() ) {
-			echo '<h1>';
-			esc_html_e( 'Sorry! That page cannot be found.', 'the-classicpress-theme' );
-			echo '</h1>';
-		} else {
-			the_title( '<h1>', '</h1>' );
-		}
-			echo '</header><!-- #page-title -->';
-	}
-	?>
-	<div id="content" role="main">
+		</div>
+	</div>
+</header>
