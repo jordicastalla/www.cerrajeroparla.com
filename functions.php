@@ -19,6 +19,7 @@ define( 'CPC_PHONE_DISPLAY', '919 93 26 78' );
 define( 'CPC_PHONE_TEL', '+34919932678' );
 define( 'CPC_MAPS_URL', 'https://maps.app.goo.gl/B6aewJE3C5fAn1fb9' );
 define( 'CPC_LOCALITY', 'Parla' );
+define( 'CPC_LANG', 'es-ES' ); // Front-end language, independent of the admin language.
 
 /*--------------------------------------------------------------
 # Theme setup
@@ -97,6 +98,25 @@ function cpc_disable_emoji_tinymce( $plugins ) {
 	return is_array( $plugins ) ? array_diff( $plugins, array( 'wpemoji' ) ) : array();
 }
 add_filter( 'tiny_mce_plugins', 'cpc_disable_emoji_tinymce' );
+
+/**
+ * Forces <html lang="es-ES"> on the front end, even when ClassicPress runs in English.
+ *
+ * @param string $output Attributes from language_attributes().
+ * @return string
+ */
+function cpc_force_lang( $output ) {
+	if ( is_admin() ) {
+		return $output;
+	}
+
+	$lang = 'lang="' . esc_attr( CPC_LANG ) . '"';
+
+	return preg_match( '/\blang="[^"]*"/', $output )
+		? preg_replace( '/\blang="[^"]*"/', $lang, $output )
+		: trim( $output . ' ' . $lang );
+}
+add_filter( 'language_attributes', 'cpc_force_lang' );
 
 // Phone calls only: no comment or pingback forms anywhere on the site.
 add_filter( 'comments_open', '__return_false', 20 );
@@ -361,6 +381,7 @@ function cpc_schema_data() {
 		),
 		'areaServed'                => array( 'Parla', 'Madrid Sur' ),
 		'hasMap'                    => CPC_MAPS_URL,
+		'knowsLanguage'             => CPC_LANG,
 	);
 
 	// Once the Avutarda logo is uploaded it becomes the business logo/image automatically.
