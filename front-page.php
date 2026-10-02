@@ -2,8 +2,9 @@
 /**
  * Homepage: industrial hero, the three core services, how it works and service area.
  *
- * If a static front page is set, its excerpt replaces the hero lead and its
- * content is printed below the services.
+ * With a static front page: its excerpt is the hero lead, its two photo slots and
+ * its four text slots (intro, urgencias, económicos, CTA) fill the sections below.
+ * Empty text slots are hidden from visitors; editors see a hint in their place.
  *
  * @package Cerrajeros_Parla
  */
@@ -14,6 +15,16 @@ $cpc_static = 'page' === get_option( 'show_on_front' ) && have_posts();
 if ( $cpc_static ) {
 	the_post();
 }
+
+// Home text slots (inc/text-slots.php): intro, urgencias, economicos, cta.
+$cpc_texts   = $cpc_static ? cpc_get_texts() : array( 'blocks' => array(), 'cta' => '' );
+$cpc_can     = $cpc_static && current_user_can( 'edit_post', get_the_ID() );
+$cpc_intro   = isset( $cpc_texts['blocks']['intro'] ) ? $cpc_texts['blocks']['intro'] : '';
+$cpc_urgent  = isset( $cpc_texts['blocks']['urgencias'] ) ? $cpc_texts['blocks']['urgencias'] : '';
+$cpc_cheap   = isset( $cpc_texts['blocks']['economicos'] ) ? $cpc_texts['blocks']['economicos'] : '';
+$cpc_content = ( $cpc_static && '' === $cpc_intro && '' !== trim( get_the_content() ) ) ? apply_filters( 'the_content', get_the_content() ) : '';
+$cpc_copy_1  = '' !== $cpc_intro ? $cpc_intro : $cpc_content; // Without an intro, the main editor content takes its place.
+$cpc_more    = '' !== $cpc_cheap || '' !== $cpc_texts['cta'] || $cpc_can;
 
 $cpc_lead = ( $cpc_static && has_excerpt() )
 	? wpautop( wp_kses_post( get_the_excerpt() ) )
@@ -51,6 +62,23 @@ $cpc_lead = ( $cpc_static && has_excerpt() )
 		</div>
 	</section>
 
+	<?php if ( '' !== $cpc_copy_1 || $cpc_can ) : ?>
+		<section class="grid-layout-2col section-block home-intro" aria-label="<?php esc_attr_e( 'Cerrajeros en Parla', 'cerrajeros-parla' ); ?>">
+			<div class="copy-block-1 entry-content">
+				<?php
+				if ( '' !== $cpc_copy_1 ) {
+					echo $cpc_copy_1; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- formatted content.
+				} else {
+					cpc_empty_slot_hint( __( 'Introducción', 'cerrajeros-parla' ) );
+				}
+				?>
+			</div>
+			<figure class="photo-slot photo-slot-1 card-steel">
+				<?php cpc_photo_slot( 1, __( 'Cerrajeros en Parla', 'cerrajeros-parla' ) ); ?>
+			</figure>
+		</section>
+	<?php endif; ?>
+
 	<section id="servicios" class="section-block services-section" aria-labelledby="servicios-title">
 		<div class="wrap">
 			<header class="section-head">
@@ -61,10 +89,48 @@ $cpc_lead = ( $cpc_static && has_excerpt() )
 		</div>
 	</section>
 
-	<?php if ( $cpc_static && '' !== trim( get_the_content() ) ) : ?>
-		<section class="section-block home-content">
-			<div class="wrap entry-content narrow">
-				<?php the_content(); ?>
+	<?php if ( '' !== $cpc_urgent || $cpc_can ) : ?>
+		<div class="divider-angled" aria-hidden="true"></div>
+
+		<section class="grid-layout-2col reverse-mobile section-block bg-steel home-urgent" aria-label="<?php esc_attr_e( 'Urgencias 24 horas', 'cerrajeros-parla' ); ?>">
+			<figure class="photo-slot photo-slot-2 card-steel">
+				<?php cpc_photo_slot( 2, __( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ) ); ?>
+			</figure>
+			<div class="copy-block-2 entry-content">
+				<?php
+				if ( '' !== $cpc_urgent ) {
+					echo $cpc_urgent; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- formatted slot HTML.
+				} else {
+					cpc_empty_slot_hint( __( '24 horas – Urgencias', 'cerrajeros-parla' ) );
+				}
+				?>
+			</div>
+		</section>
+
+	<?php endif; ?>
+
+	<?php if ( $cpc_more ) : ?>
+		<?php if ( '' !== $cpc_urgent || $cpc_can ) : ?>
+			<div class="divider-angled divider-angled--down" aria-hidden="true"></div>
+		<?php endif; ?>
+		<section class="section-block text-slots home-texts">
+			<div class="wrap narrow">
+				<div class="text-slot entry-content">
+					<?php
+					if ( '' !== $cpc_cheap ) {
+						echo $cpc_cheap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- formatted slot HTML.
+					} else {
+						cpc_empty_slot_hint( __( 'Cerrajeros económicos', 'cerrajeros-parla' ) );
+					}
+					?>
+				</div>
+				<?php
+				if ( '' !== $cpc_texts['cta'] ) {
+					cpc_cta_slot( $cpc_texts['cta'] );
+				} elseif ( $cpc_can ) {
+					cpc_empty_slot_hint( __( 'CTA (llamada a la acción)', 'cerrajeros-parla' ) );
+				}
+				?>
 			</div>
 		</section>
 	<?php endif; ?>

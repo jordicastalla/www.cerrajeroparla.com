@@ -22,6 +22,7 @@ Tema ClassicPress a mida per a **Parla Cerrajeros CP** (cerrajeroparla.com). Sub
 | `template-parts/sticky-call.php` | Barra fixa daurada en mòbil: «⚡ LLAMAR: 919 93 26 78». |
 | `template-parts/hero.php`, `services-grid.php` | Peces reutilitzades. |
 | `js/navigation.js` | Menú mòbil (sense dependències, uns 40 línies). |
+| `inc/text-slots.php` | Buits de text per tipus de pàgina: editors clàssics al backend i sortida al front. |
 | `js/admin-photos.js` | Selector de la mediateca per a les 2 fotos (només a l'administració). |
 
 ## Crear una landing de servei
@@ -39,6 +40,22 @@ Tema ClassicPress a mida per a **Parla Cerrajeros CP** (cerrajeroparla.com). Sub
    - Mida `cpc-photo` (1200×900, retallada). Per a imatges pujades abans d'activar el tema, cal regenerar les miniatures (per exemple amb `wp media regenerate`).
 
 Les targetes de la portada, el menú per defecte i el peu enllacen automàticament a aquests tres slugs: si la pàgina existeix, s'usa el seu enllaç permanent.
+
+## Buits de text (Classic Editor)
+
+Sota l'editor principal de cada pàgina hi ha el quadre **«Huecos de texto de la página»**, amb un editor clàssic (TinyMCE, amb «Añadir medios») per cada secció. El **tipus de pàgina** es detecta sol (la Home per la configuració de portada; la resta per l'slug) o es tria al desplegable. Si es canvia el tipus, cal guardar per veure els buits nous.
+
+| Tipus | Buits |
+| --- | --- |
+| Home | Introducción · 24 horas – Urgencias · Cerrajeros económicos · CTA |
+| Instalación de cerraduras y cerrojos | Introducción · Servicio urgente 24 h · Tipos de cerrojos · Alta seguridad y marcas · Según el tipo de puerta · Precios · CTA |
+| Cambio de cerradura y bombín | Introducción · Cambiar bombín · Blindadas/acorazadas · Tipos de cerraduras · Económico · CTA |
+| Reparación de cierres metálicos | Introducción · Servicio urgente · Tipos de cierres · Motorización · Comercios, garajes y naves · ¿Por qué elegirnos? · CTA |
+| Quiénes somos | Introducción · Nuestra historia · Cómo trabajamos hoy · Nuestro compromiso · CTA |
+
+Ordre a la pàgina: buit 1 + foto 1 → buit 2 + foto 2 → la resta de buits → CTA en una targeta negra amb el botó de trucada (s'afegeix sol). A la Home, els serveis i «Cómo funciona» es mantenen entre els buits. Els buits buits no es mostren als visitants; els editors hi veuen un avís. Si cap buit d'una pàgina té text, s'usa l'editor principal com abans.
+
+Els textos es guarden com a metadades `_cpc_text_{buit}` i el tipus com a `_cpc_layout`. Filtre: `cpc_text_layouts`.
 
 ## Menús
 

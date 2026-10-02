@@ -578,20 +578,18 @@ function cpc_privacy_page_template( $template ) {
 }
 add_filter( 'page_template', 'cpc_privacy_page_template' );
 
+require get_template_directory() . '/inc/text-slots.php';
+
 /*--------------------------------------------------------------
 # Admin: photo slots meta box + "servicio-localidad" check
 --------------------------------------------------------------*/
 
 /**
- * Adds the photo meta box to pages that use the landing layout.
+ * Adds the photo meta box to every page (the home uses the two photos too).
  *
  * @param WP_Post $post Page being edited.
  */
 function cpc_add_photo_meta_box( $post ) {
-	if ( 'page' === get_option( 'show_on_front' ) && (int) get_option( 'page_on_front' ) === $post->ID ) {
-		return; // front-page.php has its own layout.
-	}
-
 	add_meta_box( 'cpc-photos', __( 'Fotos de la landing (2 huecos)', 'cerrajeros-parla' ), 'cpc_render_photo_meta_box', 'page', 'side' );
 }
 add_action( 'add_meta_boxes_page', 'cpc_add_photo_meta_box' );
