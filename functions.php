@@ -100,6 +100,23 @@ function cpc_disable_emoji_tinymce( $plugins ) {
 add_filter( 'tiny_mce_plugins', 'cpc_disable_emoji_tinymce' );
 
 /**
+ * Front-end locale es_ES (from CPC_LANG), whatever the admin language is.
+ *
+ * get_locale() is what SEO plugins use for og:locale (The SEO Framework printed
+ * en_GB), so the whole public site reports Spanish. The admin keeps its language.
+ *
+ * @param string $locale Site locale.
+ * @return string
+ */
+function cpc_front_locale( $locale ) {
+	if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+		return $locale;
+	}
+	return str_replace( '-', '_', CPC_LANG );
+}
+add_filter( 'locale', 'cpc_front_locale' );
+
+/**
  * Forces <html lang="es-ES"> on the front end, even when ClassicPress runs in English.
  *
  * @param string $output Attributes from language_attributes().

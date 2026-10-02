@@ -91,5 +91,5 @@ Cada botó de trucada porta l'atribut `data-call="header|hero|cta-band|footer|st
 
 - **Textos per defecte**: els textos de la portada i els de reserva no inclouen preus, temps d'arribada, garanties ni opinions, perquè no en tenim dades verificades. Si el client en té, s'haurien d'afegir com a contingut real.
 - **Google Fonts i RGPD**: les fonts es carreguen des dels servidors de Google, tal com demanava l'encàrrec. A Alemanya, el tribunal LG München I (sentència del 20/01/2022, Az. 3 O 17493/20) va considerar contrari al RGPD transmetre la IP del visitant a Google Fonts sense consentiment. Si es vol evitar aquest risc, es poden allotjar les fonts al mateix servidor.
-- **Idioma**: el front sempre porta `<html lang="es-ES">` (constant `CPC_LANG`), encara que l'administració de ClassicPress estiga en anglés. El Schema inclou `knowsLanguage: es-ES`.
+- **Idioma**: el front sempre funciona en `es_ES` (constant `CPC_LANG`), encara que l'administració de ClassicPress estiga en anglés: `<html lang="es-ES">` i `get_locale()`, que és el que usen els plugins de SEO per a `og:locale`. El Schema inclou `knowsLanguage: es-ES`.
 - **Comentaris i pingbacks**: estan desactivats a tot el lloc (`comments_open` i `pings_open` retornen `false`).
