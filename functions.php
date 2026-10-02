@@ -315,7 +315,8 @@ function cpc_site_logo( $context = 'header' ) {
 }
 
 /**
- * Main menu fallback: home + the three service landings.
+ * Main menu fallback (only while no menu is assigned to "Menú principal"):
+ * home + the three service landings + Quiénes somos.
  */
 function cpc_menu_fallback() {
 	echo '<ul id="primary-menu" class="menu">';
@@ -335,6 +336,14 @@ function cpc_menu_fallback() {
 			esc_html( $service['menu'] )
 		);
 	}
+
+	$about = get_page_by_path( 'quienes-somos' );
+	printf(
+		'<li class="menu-item"><a href="%1$s"%2$s>%3$s</a></li>',
+		esc_url( $about ? get_permalink( $about ) : home_url( user_trailingslashit( 'quienes-somos' ) ) ),
+		is_page( 'quienes-somos' ) ? ' aria-current="page"' : '',
+		esc_html__( 'Quiénes somos', 'cerrajeros-parla' )
+	);
 
 	echo '</ul>';
 }

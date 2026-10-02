@@ -73,7 +73,7 @@ Els textos fixos del tema canvien segons el tipus de pàgina (`cpc_copy()` a `in
 
 ## Menús
 
-- **Menú principal**: si no n'assignes cap, es mostren Inici i els 3 serveis.
+- **Menú principal**: editable a *Appearance → Menus*. Crea un menú, afig-hi les pàgines (també enllaços personalitzats) i marca la ubicació «Menú principal». Admet un nivell de submenú. Mentre no n'hi haja cap d'assignat, es mostra el menú automàtic: Inicio, els 3 serveis i Quiénes somos.
 - **Menú legal (pie de página)**: avís legal, privacitat i cookies. Si no n'assignes cap, es mostra l'enllaç a la política de privacitat.
 - La pàgina de privacitat utilitza automàticament la plantilla «Texto legal (sin fotos)». La resta de pàgines legals l'has de triar manualment a «Atributos de página → Plantilla».
 
