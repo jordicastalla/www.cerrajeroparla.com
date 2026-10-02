@@ -53,7 +53,16 @@ Sota l'editor principal de cada pàgina hi ha el quadre **«Huecos de texto de l
 | Reparación de cierres metálicos | Introducción · Servicio urgente · Tipos de cierres · Motorización · Comercios, garajes y naves · ¿Por qué elegirnos? · CTA |
 | Quiénes somos | Introducción · Nuestra historia · Cómo trabajamos hoy · Nuestro compromiso · CTA |
 
-Ordre a la pàgina: buit 1 + foto 1 → buit 2 + foto 2 → la resta de buits → CTA en una targeta negra amb el botó de trucada (s'afegeix sol). A la Home, els serveis i «Cómo funciona» es mantenen entre els buits. Els buits buits no es mostren als visitants; els editors hi veuen un avís. Si cap buit d'una pàgina té text, s'usa l'editor principal com abans.
+Ordre al frontend:
+
+1. **Intro** (amplada completa)
+2. **Secció | Foto 1**
+3. **Secció** (amplada completa, fons d'acer)
+4. **Foto 2 | Secció**
+5. La resta de seccions (amplada completa)
+6. **CTA** en una targeta negra amb el botó de trucada (s'afegeix sol)
+
+A la Home: Intro → Urgencias | Foto 1 → serveis → Foto 2 | Económicos → CTA → «Cómo funciona». Els buits buits no es mostren als visitants; els editors hi veuen un avís. Si cap buit d'una pàgina té text, s'usa l'editor principal com abans.
 
 Els textos es guarden com a metadades `_cpc_text_{buit}` i el tipus com a `_cpc_layout`. Filtre: `cpc_text_layouts`.
 

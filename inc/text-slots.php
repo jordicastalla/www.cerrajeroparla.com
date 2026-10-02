@@ -285,6 +285,20 @@ function cpc_cta_slot( $html ) {
 }
 
 /**
+ * Prints a slot's HTML, or the editor-only hint when it is empty.
+ *
+ * @param string $html  Formatted slot HTML.
+ * @param string $label Slot name for the hint.
+ */
+function cpc_slot_or_hint( $html, $label ) {
+	if ( '' !== (string) $html ) {
+		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- formatted slot HTML.
+	} else {
+		cpc_empty_slot_hint( $label );
+	}
+}
+
+/**
  * Editor-only placeholder for an empty text slot (visitors never see it).
  *
  * @param string $label Slot name.

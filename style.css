@@ -841,6 +841,12 @@ small {
 	clip-path: polygon(0 0, 100% 0, 0 calc(100% - 10px));
 }
 
+/* A full-width text section followed by a 2-column one on the same background */
+.text-slots + .grid-layout-2col,
+.slot-middle + .grid-layout-2col {
+	padding-top: 0;
+}
+
 /* Text slots stacked below the two photo sections */
 .text-slot + .text-slot,
 .text-slot + .cta-slot {

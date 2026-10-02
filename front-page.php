@@ -24,7 +24,6 @@ $cpc_urgent  = isset( $cpc_texts['blocks']['urgencias'] ) ? $cpc_texts['blocks']
 $cpc_cheap   = isset( $cpc_texts['blocks']['economicos'] ) ? $cpc_texts['blocks']['economicos'] : '';
 $cpc_content = ( $cpc_static && '' === $cpc_intro && '' !== trim( get_the_content() ) ) ? apply_filters( 'the_content', get_the_content() ) : '';
 $cpc_copy_1  = '' !== $cpc_intro ? $cpc_intro : $cpc_content; // Without an intro, the main editor content takes its place.
-$cpc_more    = '' !== $cpc_cheap || '' !== $cpc_texts['cta'] || $cpc_can;
 
 $cpc_lead = ( $cpc_static && has_excerpt() )
 	? wpautop( wp_kses_post( get_the_excerpt() ) )
@@ -62,21 +61,25 @@ $cpc_lead = ( $cpc_static && has_excerpt() )
 		</div>
 	</section>
 
+	<?php /* INTRO: full width */ ?>
 	<?php if ( '' !== $cpc_copy_1 || $cpc_can ) : ?>
-		<section class="grid-layout-2col section-block home-intro" aria-label="<?php esc_attr_e( 'Cerrajeros en Parla', 'cerrajeros-parla' ); ?>">
-			<div class="copy-block-1 entry-content">
-				<?php
-				if ( '' !== $cpc_copy_1 ) {
-					echo $cpc_copy_1; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- formatted content.
-				} else {
-					cpc_empty_slot_hint( __( 'Introducción', 'cerrajeros-parla' ) );
-				}
-				?>
+		<section class="section-block text-slots home-intro">
+			<div class="wrap narrow text-slot entry-content">
+				<?php cpc_slot_or_hint( $cpc_copy_1, __( 'Introducción', 'cerrajeros-parla' ) ); ?>
 			</div>
-			<figure class="photo-slot photo-slot-1 card-steel">
-				<?php cpc_photo_slot( 1, __( 'Cerrajeros en Parla', 'cerrajeros-parla' ) ); ?>
-			</figure>
 		</section>
+	<?php endif; ?>
+
+	<?php /* SECTION | PHOTO 1 (only with a static front page, which holds the photos) */ ?>
+	<?php if ( $cpc_static ) : ?>
+	<section class="grid-layout-2col section-block home-urgent" aria-label="<?php esc_attr_e( 'Urgencias 24 horas', 'cerrajeros-parla' ); ?>">
+		<div class="copy-block-1 entry-content">
+			<?php cpc_slot_or_hint( $cpc_urgent, __( '24 horas – Urgencias', 'cerrajeros-parla' ) ); ?>
+		</div>
+		<figure class="photo-slot photo-slot-1 card-steel">
+			<?php cpc_photo_slot( 1, __( 'Cerrajeros en Parla', 'cerrajeros-parla' ) ); ?>
+		</figure>
+	</section>
 	<?php endif; ?>
 
 	<section id="servicios" class="section-block services-section" aria-labelledby="servicios-title">
@@ -89,53 +92,36 @@ $cpc_lead = ( $cpc_static && has_excerpt() )
 		</div>
 	</section>
 
-	<?php if ( '' !== $cpc_urgent || $cpc_can ) : ?>
-		<div class="divider-angled" aria-hidden="true"></div>
+	<div class="divider-angled" aria-hidden="true"></div>
 
-		<section class="grid-layout-2col reverse-mobile section-block bg-steel home-urgent" aria-label="<?php esc_attr_e( 'Urgencias 24 horas', 'cerrajeros-parla' ); ?>">
-			<figure class="photo-slot photo-slot-2 card-steel">
-				<?php cpc_photo_slot( 2, __( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ) ); ?>
-			</figure>
-			<div class="copy-block-2 entry-content">
-				<?php
-				if ( '' !== $cpc_urgent ) {
-					echo $cpc_urgent; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- formatted slot HTML.
-				} else {
-					cpc_empty_slot_hint( __( '24 horas – Urgencias', 'cerrajeros-parla' ) );
-				}
-				?>
-			</div>
-		</section>
-
+	<?php /* PHOTO 2 | SECTION */ ?>
+	<?php if ( $cpc_static ) : ?>
+	<section class="grid-layout-2col reverse-mobile section-block bg-steel home-cheap" aria-label="<?php esc_attr_e( 'Precios', 'cerrajeros-parla' ); ?>">
+		<figure class="photo-slot photo-slot-2 card-steel">
+			<?php cpc_photo_slot( 2, __( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ) ); ?>
+		</figure>
+		<div class="copy-block-2 entry-content">
+			<?php cpc_slot_or_hint( $cpc_cheap, __( 'Cerrajeros económicos', 'cerrajeros-parla' ) ); ?>
+		</div>
+	</section>
 	<?php endif; ?>
 
-	<?php if ( $cpc_more ) : ?>
-		<?php if ( '' !== $cpc_urgent || $cpc_can ) : ?>
-			<div class="divider-angled divider-angled--down" aria-hidden="true"></div>
-		<?php endif; ?>
-		<section class="section-block text-slots home-texts">
+	<?php /* CTA */ ?>
+	<?php if ( '' !== $cpc_texts['cta'] || $cpc_can ) : ?>
+		<div class="divider-angled divider-angled--down" aria-hidden="true"></div>
+		<section class="section-block text-slots home-cta">
 			<div class="wrap narrow">
-				<div class="text-slot entry-content">
-					<?php
-					if ( '' !== $cpc_cheap ) {
-						echo $cpc_cheap; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- formatted slot HTML.
-					} else {
-						cpc_empty_slot_hint( __( 'Cerrajeros económicos', 'cerrajeros-parla' ) );
-					}
-					?>
-				</div>
 				<?php
 				if ( '' !== $cpc_texts['cta'] ) {
 					cpc_cta_slot( $cpc_texts['cta'] );
-				} elseif ( $cpc_can ) {
+				} else {
 					cpc_empty_slot_hint( __( 'CTA (llamada a la acción)', 'cerrajeros-parla' ) );
 				}
 				?>
 			</div>
 		</section>
+		<div class="divider-angled" aria-hidden="true"></div>
 	<?php endif; ?>
-
-	<div class="divider-angled" aria-hidden="true"></div>
 
 	<section class="section-block bg-steel steps-section" aria-labelledby="como-title">
 		<div class="wrap steps-layout">
