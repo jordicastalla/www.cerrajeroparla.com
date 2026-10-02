@@ -28,7 +28,7 @@ $cpc_more    = '' !== $cpc_cheap || '' !== $cpc_texts['cta'] || $cpc_can;
 
 $cpc_lead = ( $cpc_static && has_excerpt() )
 	? wpautop( wp_kses_post( get_the_excerpt() ) )
-	: '<p>' . esc_html__( 'Cambio de cerraduras, instalación de cerrojos y reparación de cierres metálicos en Parla y Madrid Sur. Llama a cualquier hora del día o de la noche.', 'cerrajeros-parla' ) . '</p>';
+	: '<p>' . esc_html__( 'Apertura de puertas y urgencias de cerrajería en Parla y Madrid Sur. Llama a cualquier hora del día o de la noche.', 'cerrajeros-parla' ) . '</p>';
 ?>
 <main id="content" class="site-main">
 
@@ -161,7 +161,7 @@ $cpc_lead = ( $cpc_static && has_excerpt() )
 						<span class="step__num" aria-hidden="true">2</span>
 						<div>
 							<h3><?php esc_html_e( 'Cuéntanos qué ocurre', 'cerrajeros-parla' ); ?></h3>
-							<p><?php esc_html_e( 'Puerta cerrada, cerradura dañada, cerrojo nuevo o cierre metálico que no sube ni baja.', 'cerrajeros-parla' ); ?></p>
+							<p><?php esc_html_e( 'Puerta cerrada, llave perdida o cualquier avería: explícanos qué ha pasado.', 'cerrajeros-parla' ); ?></p>
 						</div>
 					</li>
 					<li class="step">

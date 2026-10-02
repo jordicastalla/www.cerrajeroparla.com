@@ -9,9 +9,9 @@
 <section class="cta-band" aria-labelledby="cta-band-title">
 	<div class="cta-band__inner">
 		<div class="cta-band__copy">
-			<p class="cta-band__eyebrow"><?php esc_html_e( 'Cerrajero urgente en Parla', 'cerrajeros-parla' ); ?></p>
-			<h2 id="cta-band-title"><?php esc_html_e( '¿Puerta cerrada, cerradura rota o cierre atascado?', 'cerrajeros-parla' ); ?></h2>
-			<p><?php esc_html_e( 'Llámanos a cualquier hora: atendemos por teléfono las 24 horas, todos los días.', 'cerrajeros-parla' ); ?></p>
+			<p class="cta-band__eyebrow"><?php echo esc_html( cpc_copy( 'band_eyebrow' ) ); ?></p>
+			<h2 id="cta-band-title"><?php echo esc_html( cpc_copy( 'band_title' ) ); ?></h2>
+			<p><?php echo esc_html( cpc_copy( 'band_text' ) ); ?></p>
 		</div>
 		<?php cpc_call_button( 'cta-band', CPC_PHONE_DISPLAY, 'btn-xl' ); ?>
 	</div>
@@ -21,7 +21,7 @@
 	<div class="site-footer__grid">
 		<div class="footer-col footer-col--brand">
 			<?php cpc_site_logo( 'footer' ); ?>
-			<p><?php esc_html_e( 'Cerrajeros urgentes en Parla (Madrid): cambio de cerraduras, instalación de cerrojos y reparación de cierres metálicos.', 'cerrajeros-parla' ); ?></p>
+			<p><?php echo esc_html( cpc_copy( 'footer_text' ) ); ?></p>
 		</div>
 
 		<nav class="footer-col" aria-labelledby="footer-services-title">

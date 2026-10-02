@@ -17,7 +17,7 @@ $args = wp_parse_args(
 	array(
 		'title'   => '',
 		'lead'    => '',
-		'eyebrow' => __( 'Cerrajeros 24 h · Parla (Madrid)', 'cerrajeros-parla' ),
+		'eyebrow' => cpc_copy( 'eyebrow' ),
 		'cta'     => true,
 	)
 );

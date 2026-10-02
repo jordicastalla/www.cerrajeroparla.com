@@ -57,6 +57,10 @@ Ordre a la pàgina: buit 1 + foto 1 → buit 2 + foto 2 → la resta de buits �
 
 Els textos es guarden com a metadades `_cpc_text_{buit}` i el tipus com a `_cpc_layout`. Filtre: `cpc_text_layouts`.
 
+## Paraules clau sense canibalització
+
+Els textos fixos del tema canvien segons el tipus de pàgina (`cpc_copy()` a `inc/text-slots.php`): avantítol del hero, entradeta per defecte, insígnia de la capçalera, alt de la foto 2, banda de crida i text del peu. Cada servei només usa la seua paraula clau; «cerrajeros Parla» queda per a la Home, i els altres serveis només apareixen com a text d'enllaç (menú, peu i targetes). Les pàgines sense tipus (textos legals) usen textos neutres. Filtre: `cpc_context_copy`.
+
 ## Menús
 
 - **Menú principal**: si no n'assignes cap, es mostren Inici i els 3 serveis.

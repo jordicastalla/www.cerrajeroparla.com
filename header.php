@@ -33,7 +33,7 @@
 		<div class="topbar__inner">
 			<p class="status-badge">
 				<span class="status-dot" aria-hidden="true"></span>
-				<?php esc_html_e( 'Cerrajero libre en Parla', 'cerrajeros-parla' ); ?>
+				<?php echo esc_html( cpc_copy( 'badge' ) ); ?>
 			</p>
 			<p class="topbar__meta">
 				<?php echo cpc_icon( 'clock' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>

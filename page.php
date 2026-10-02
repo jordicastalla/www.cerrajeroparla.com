@@ -53,16 +53,16 @@ while ( have_posts() ) :
 
 		<div class="divider-angled" aria-hidden="true"></div>
 
-		<section class="grid-layout-2col reverse-mobile section-block bg-steel" aria-label="<?php esc_attr_e( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ); ?>">
+		<section class="grid-layout-2col reverse-mobile section-block bg-steel" aria-label="<?php echo esc_attr( cpc_copy( 'alt_2' ) ); ?>">
 			<figure class="photo-slot photo-slot-2 card-steel">
-				<?php cpc_photo_slot( 2, __( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ) ); ?>
+				<?php cpc_photo_slot( 2, cpc_copy( 'alt_2' ) ); ?>
 			</figure>
 			<div class="copy-block-2 entry-content">
 				<?php if ( '' !== trim( wp_strip_all_tags( (string) $cpc_copy_2 ) ) || false !== strpos( (string) $cpc_copy_2, '<img' ) ) : ?>
 					<?php echo $cpc_copy_2; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- formatted content. ?>
 				<?php else : ?>
-					<h2><?php esc_html_e( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ); ?></h2>
-					<p><?php esc_html_e( 'Cuéntanos por teléfono qué le pasa a tu puerta, cerradura o cierre metálico y te indicamos cómo lo resolvemos.', 'cerrajeros-parla' ); ?></p>
+					<h2><?php echo esc_html( cpc_copy( 'fallback_h2' ) ); ?></h2>
+					<p><?php echo esc_html( cpc_copy( 'fallback_p' ) ); ?></p>
 					<p><?php cpc_call_button( 'landing-fallback' ); ?></p>
 				<?php endif; ?>
 

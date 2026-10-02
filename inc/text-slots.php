@@ -410,3 +410,121 @@ function cpc_save_texts( $post_id ) {
 	}
 }
 add_action( 'save_post_page', 'cpc_save_texts' );
+
+/*--------------------------------------------------------------
+# Context copy: theme-owned texts per page type (anti-cannibalisation)
+--------------------------------------------------------------*/
+
+/**
+ * Page type of the current request: a page's layout, or 'home' for everything else.
+ *
+ * @return string
+ */
+function cpc_current_context() {
+	static $context = null;
+
+	if ( null === $context ) {
+		$context = 'home';
+		if ( is_page() && ! is_front_page() ) {
+			$layout  = cpc_get_layout( get_queried_object_id() );
+			$context = $layout ? $layout : 'neutral';
+		}
+	}
+
+	return $context;
+}
+
+/**
+ * Theme-owned text for the current page type.
+ *
+ * Each service page only uses its own keyword; the home keyword
+ * ("cerrajeros Parla") and the other services' keywords appear there
+ * only as link text (menu, footer, service cards).
+ *
+ * @param string $field eyebrow|lead|badge|alt_2|fallback_h2|fallback_p|band_eyebrow|band_title|band_text|footer_text.
+ * @return string Plain text (escape on output).
+ */
+function cpc_copy( $field ) {
+	$phone = CPC_PHONE_DISPLAY;
+	$any   = __( 'Llámanos a cualquier hora: atendemos por teléfono las 24 horas, todos los días.', 'cerrajeros-parla' );
+
+	$copy = array(
+		'home'      => array(
+			'eyebrow'      => __( 'Cerrajeros 24 h · Parla (Madrid)', 'cerrajeros-parla' ),
+			/* translators: %s: phone number. */
+			'lead'         => sprintf( __( 'Servicio de cerrajería en Parla las 24 horas, todos los días. Llama al %s y cuéntanos qué necesitas.', 'cerrajeros-parla' ), $phone ),
+			'badge'        => __( 'Cerrajero libre en Parla', 'cerrajeros-parla' ),
+			'alt_2'        => __( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ),
+			'fallback_h2'  => __( 'Cerrajeros en Parla 24 horas', 'cerrajeros-parla' ),
+			'fallback_p'   => __( 'Cuéntanos por teléfono qué te ha pasado y te indicamos cómo lo resolvemos.', 'cerrajeros-parla' ),
+			'band_eyebrow' => __( 'Cerrajero urgente en Parla', 'cerrajeros-parla' ),
+			'band_title'   => __( '¿Te has quedado fuera de casa?', 'cerrajeros-parla' ),
+			'band_text'    => $any,
+			'footer_text'  => __( 'Cerrajeros urgentes en Parla (Madrid), 24 horas.', 'cerrajeros-parla' ),
+		),
+		'cerradura' => array(
+			'eyebrow'      => __( 'Cerraduras y bombines · Parla (Madrid)', 'cerrajeros-parla' ),
+			/* translators: %s: phone number. */
+			'lead'         => sprintf( __( 'Cambio de cerradura y bombín en Parla las 24 horas, todos los días. Llama al %s y cuéntanos qué cerradura tienes.', 'cerrajeros-parla' ), $phone ),
+			'badge'        => __( 'Técnico libre en Parla', 'cerrajeros-parla' ),
+			'alt_2'        => __( 'Cambio de cerradura en Parla', 'cerrajeros-parla' ),
+			'fallback_h2'  => __( 'Cambio de cerradura en Parla, 24 horas', 'cerrajeros-parla' ),
+			'fallback_p'   => __( 'Cuéntanos por teléfono qué le pasa a tu cerradura o a tu bombín y te indicamos cómo lo resolvemos.', 'cerrajeros-parla' ),
+			'band_eyebrow' => __( 'Cambio de cerradura urgente', 'cerrajeros-parla' ),
+			'band_title'   => __( '¿Llave perdida o cerradura dañada?', 'cerrajeros-parla' ),
+			'band_text'    => $any,
+			'footer_text'  => __( 'Cambio de cerraduras y bombines en Parla (Madrid).', 'cerrajeros-parla' ),
+		),
+		'cerrojos'  => array(
+			'eyebrow'      => __( 'Cerrojos de seguridad · Parla (Madrid)', 'cerrajeros-parla' ),
+			/* translators: %s: phone number. */
+			'lead'         => sprintf( __( 'Instalación de cerrojos de seguridad en Parla las 24 horas, todos los días. Llama al %s y cuéntanos qué puerta quieres reforzar.', 'cerrajeros-parla' ), $phone ),
+			'badge'        => __( 'Técnico libre en Parla', 'cerrajeros-parla' ),
+			'alt_2'        => __( 'Instalación de cerrojos de seguridad en Parla', 'cerrajeros-parla' ),
+			'fallback_h2'  => __( 'Instalación de cerrojos de seguridad en Parla', 'cerrajeros-parla' ),
+			'fallback_p'   => __( 'Cuéntanos por teléfono qué puerta tienes y te indicamos qué cerrojo de seguridad encaja.', 'cerrajeros-parla' ),
+			'band_eyebrow' => __( 'Instalación de cerrojos', 'cerrajeros-parla' ),
+			'band_title'   => __( '¿Quieres reforzar tu puerta?', 'cerrajeros-parla' ),
+			'band_text'    => $any,
+			'footer_text'  => __( 'Instalación de cerrojos de seguridad en Parla (Madrid).', 'cerrajeros-parla' ),
+		),
+		'cierres'   => array(
+			'eyebrow'      => __( 'Cierres metálicos · Parla (Madrid)', 'cerrajeros-parla' ),
+			/* translators: %s: phone number. */
+			'lead'         => sprintf( __( 'Reparación de cierres metálicos y persianas de comercio en Parla las 24 horas, todos los días. Llama al %s y cuéntanos qué le pasa.', 'cerrajeros-parla' ), $phone ),
+			'badge'        => __( 'Técnico libre en Parla', 'cerrajeros-parla' ),
+			'alt_2'        => __( 'Reparación de cierres metálicos en Parla', 'cerrajeros-parla' ),
+			'fallback_h2'  => __( 'Reparación de cierres metálicos en Parla', 'cerrajeros-parla' ),
+			'fallback_p'   => __( 'Cuéntanos por teléfono qué le pasa a tu persiana metálica y te indicamos cómo lo resolvemos.', 'cerrajeros-parla' ),
+			'band_eyebrow' => __( 'Reparación urgente de cierres', 'cerrajeros-parla' ),
+			'band_title'   => __( '¿Tu persiana metálica no sube o no baja?', 'cerrajeros-parla' ),
+			'band_text'    => $any,
+			'footer_text'  => __( 'Reparación de cierres metálicos y persianas de comercio en Parla (Madrid).', 'cerrajeros-parla' ),
+		),
+		'quienes'   => array(
+			'eyebrow'      => __( 'Quiénes somos · Parla (Madrid)', 'cerrajeros-parla' ),
+			/* translators: %s: phone number. */
+			'lead'         => sprintf( __( 'Te contamos quiénes somos. Si nos necesitas, llama al %s a cualquier hora.', 'cerrajeros-parla' ), $phone ),
+			'badge'        => __( 'Técnico libre en Parla', 'cerrajeros-parla' ),
+			'alt_2'        => CPC_BRAND,
+			'fallback_h2'  => CPC_BRAND,
+			'fallback_p'   => __( 'Llámanos y cuéntanos en qué te podemos ayudar.', 'cerrajeros-parla' ),
+			'band_eyebrow' => CPC_BRAND,
+			'band_title'   => __( '¿Hablamos?', 'cerrajeros-parla' ),
+			'band_text'    => $any,
+			'footer_text'  => __( 'Parla Cerrajeros CP, en Parla (Madrid).', 'cerrajeros-parla' ),
+		),
+	);
+
+	// Legal pages and other pages without a type: no service keyword at all.
+	$copy['neutral']                 = $copy['quienes'];
+	$copy['neutral']['eyebrow']      = __( 'Parla (Madrid)', 'cerrajeros-parla' );
+	$copy['neutral']['lead']         = '';
+	$copy['neutral']['band_title']   = __( '¿Necesitas ayuda?', 'cerrajeros-parla' );
+
+	$copy    = apply_filters( 'cpc_context_copy', $copy );
+	$context = cpc_current_context();
+	$set     = isset( $copy[ $context ] ) ? $copy[ $context ] : $copy['home'];
+
+	return isset( $set[ $field ] ) ? $set[ $field ] : '';
+}

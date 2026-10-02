@@ -209,21 +209,21 @@ function cpc_services() {
 			'slug' => 'cambio-de-cerradura-parla',
 			'name' => __( 'Cambio de Cerradura', 'cerrajeros-parla' ),
 			'menu' => __( 'Cambio de cerradura', 'cerrajeros-parla' ),
-			'text' => __( 'Sustitución de cerraduras y bombines para recuperar el control de tu puerta y reforzar su seguridad.', 'cerrajeros-parla' ),
+			'text' => __( 'Si pierdes la llave o el bombín falla, recupera el control de tu puerta.', 'cerrajeros-parla' ),
 			'icon' => 'padlock',
 		),
 		array(
 			'slug' => 'instalacion-de-cerrojos-parla',
 			'name' => __( 'Instalación de Cerrojos', 'cerrajeros-parla' ),
 			'menu' => __( 'Cerrojos', 'cerrajeros-parla' ),
-			'text' => __( 'Montaje de cerrojos adicionales en tu puerta para sumar un punto de cierre más.', 'cerrajeros-parla' ),
+			'text' => __( 'Un punto de cierre más para que tu puerta sea más difícil de forzar.', 'cerrajeros-parla' ),
 			'icon' => 'deadbolt',
 		),
 		array(
 			'slug' => 'reparacion-cierres-metalicos-parla',
 			'name' => __( 'Reparación Cierres Metálicos', 'cerrajeros-parla' ),
 			'menu' => __( 'Cierres metálicos', 'cerrajeros-parla' ),
-			'text' => __( 'Reparación de cierres y persianas metálicas de comercios, locales y garajes.', 'cerrajeros-parla' ),
+			'text' => __( 'Para comercios, locales y garajes cuya persiana no sube o no baja.', 'cerrajeros-parla' ),
 			'icon' => 'shutter',
 		),
 	);
@@ -329,14 +329,9 @@ function cpc_get_lead_text() {
 		return wpautop( wp_kses_post( get_the_excerpt() ) );
 	}
 
-	return '<p>' . esc_html(
-		sprintf(
-			/* translators: 1: locality, 2: phone number. */
-			__( 'Servicio de cerrajería en %1$s las 24 horas, todos los días. Llama al %2$s y cuéntanos qué necesitas.', 'cerrajeros-parla' ),
-			CPC_LOCALITY,
-			CPC_PHONE_DISPLAY
-		)
-	) . '</p>';
+	$lead = cpc_copy( 'lead' ); // Default lead of the page type (inc/text-slots.php).
+
+	return '' === $lead ? '' : '<p>' . esc_html( $lead ) . '</p>';
 }
 
 /**
