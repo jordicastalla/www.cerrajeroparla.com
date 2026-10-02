@@ -130,27 +130,16 @@ function cpc_text_layouts() {
 			),
 		),
 		'quienes'   => array(
-			'label' => __( 'Quiénes somos', 'cerrajeros-parla' ),
-			'slots' => array(
-				'intro'       => array(
-					'label' => __( 'Introducción – Quiénes somos', 'cerrajeros-parla' ),
-					'hint'  => __( 'Presentación cercana: quiénes sois y desde cuándo.', 'cerrajeros-parla' ),
+			'label'  => __( 'Quiénes somos', 'cerrajeros-parla' ),
+			'photos' => 1, // Single photo, next to text 1.
+			'slots'  => array(
+				'texto_1' => array(
+					'label' => __( 'Texto 1 (junto a la foto)', 'cerrajeros-parla' ),
+					'hint'  => __( 'Fragmento breve: quiénes sois.', 'cerrajeros-parla' ),
 				),
-				'historia'    => array(
-					'label' => __( 'Nuestra historia', 'cerrajeros-parla' ),
-					'hint'  => __( 'Origen, evolución y vínculo con Parla.', 'cerrajeros-parla' ),
-				),
-				'trabajo'     => array(
-					'label' => __( 'Cómo trabajamos hoy', 'cerrajeros-parla' ),
-					'hint'  => __( 'Equipo, formación, medios, cobertura 24 horas y servicios.', 'cerrajeros-parla' ),
-				),
-				'compromiso'  => array(
-					'label' => __( 'Nuestro compromiso contigo', 'cerrajeros-parla' ),
-					'hint'  => __( 'Transparencia en precios, trato humano, garantía del trabajo.', 'cerrajeros-parla' ),
-				),
-				'cta'         => array(
-					'label' => __( 'CTA (llamada a la acción)', 'cerrajeros-parla' ),
-					'hint'  => __( 'Invitación cercana a llamar, sin urgencia. El botón de llamada se añade solo.', 'cerrajeros-parla' ),
+				'texto_2' => array(
+					'label' => __( 'Texto 2', 'cerrajeros-parla' ),
+					'hint'  => __( 'Fragmento breve, debajo de la foto.', 'cerrajeros-parla' ),
 				),
 			),
 		),
@@ -177,6 +166,19 @@ function cpc_get_layout( $post_id ) {
 	}
 
 	return cpc_detect_layout( $post_id );
+}
+
+/**
+ * Number of photo slots of a page: 2 by default, 1 for "Quiénes somos".
+ *
+ * @param int $post_id Page ID.
+ * @return int
+ */
+function cpc_photo_count( $post_id ) {
+	$layouts = cpc_text_layouts();
+	$layout  = cpc_get_layout( $post_id );
+
+	return ( $layout && isset( $layouts[ $layout ]['photos'] ) ) ? (int) $layouts[ $layout ]['photos'] : 2;
 }
 
 /**

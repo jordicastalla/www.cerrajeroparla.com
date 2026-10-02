@@ -2,7 +2,8 @@
 /**
  * Default page template — "servicio-localidad" landing.
  *
- * Every landing has EXACTLY TWO photo slots. With the "Huecos de texto" editors
+ * Every service landing has EXACTLY TWO photo slots ("Quiénes somos" has its own
+ * layout in template-parts/page-about.php: two short texts and one photo). With the "Huecos de texto" editors
  * (inc/text-slots.php) the order is:
  *   hero → INTRO → [section | photo 1] → divider → SECTION → [photo 2 | section] → rest → CTA
  *
@@ -17,6 +18,11 @@ get_header();
 
 while ( have_posts() ) :
 	the_post();
+
+	if ( 'quienes' === cpc_get_layout( get_the_ID() ) ) {
+		get_template_part( 'template-parts/page-about' ); // Two short texts + one photo.
+		continue;
+	}
 
 	$cpc_texts = cpc_get_texts();
 	$cpc_title = wp_strip_all_tags( get_the_title() );

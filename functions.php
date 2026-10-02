@@ -545,7 +545,7 @@ function cpc_photo_slot( $slot, $alt ) {
 			<span class="photo-slot__hint">
 				<?php
 				/* translators: %d: photo slot number. */
-				printf( esc_html__( 'Hueco de foto %d reservado: asígnala en la caja «Fotos de la landing» del editor.', 'cerrajeros-parla' ), (int) $slot );
+				printf( esc_html__( 'Hueco de foto %d reservado: asígnala en la caja «Fotos de la página» del editor.', 'cerrajeros-parla' ), (int) $slot );
 				?>
 			</span>
 		<?php endif; ?>
@@ -585,7 +585,7 @@ require get_template_directory() . '/inc/text-slots.php';
  * @param WP_Post $post Page being edited.
  */
 function cpc_add_photo_meta_box( $post ) {
-	add_meta_box( 'cpc-photos', __( 'Fotos de la landing (2 huecos)', 'cerrajeros-parla' ), 'cpc_render_photo_meta_box', 'page', 'side' );
+	add_meta_box( 'cpc-photos', __( 'Fotos de la página', 'cerrajeros-parla' ), 'cpc_render_photo_meta_box', 'page', 'side' );
 }
 add_action( 'add_meta_boxes_page', 'cpc_add_photo_meta_box' );
 
@@ -597,7 +597,7 @@ add_action( 'add_meta_boxes_page', 'cpc_add_photo_meta_box' );
 function cpc_render_photo_meta_box( $post ) {
 	wp_nonce_field( 'cpc_save_photos', 'cpc_photos_nonce' );
 
-	foreach ( array( 1, 2 ) as $slot ) {
+	foreach ( range( 1, cpc_photo_count( $post->ID ) ) as $slot ) {
 		$id      = absint( get_post_meta( $post->ID, '_cpc_photo_' . $slot, true ) );
 		$preview = $id ? wp_get_attachment_image_url( $id, 'medium' ) : '';
 		?>
@@ -665,7 +665,10 @@ function cpc_save_photo_meta( $post_id ) {
 
 	foreach ( array( 1, 2 ) as $slot ) {
 		$key = 'cpc_photo_' . $slot;
-		$id  = isset( $_POST[ $key ] ) ? absint( $_POST[ $key ] ) : 0;
+		if ( ! isset( $_POST[ $key ] ) ) {
+			continue; // Slot not shown for this page type (e.g. "Quiénes somos" has one photo).
+		}
+		$id = absint( $_POST[ $key ] );
 
 		if ( $id && wp_attachment_is_image( $id ) ) {
 			update_post_meta( $post_id, '_cpc_photo_' . $slot, $id );

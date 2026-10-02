@@ -21,6 +21,7 @@ Tema ClassicPress a mida per a **Parla Cerrajeros CP** (cerrajeroparla.com). Sub
 | `single.php`, `index.php`, `404.php` | Entrades, arxius i cerca, i la pàgina 404 (amb els serveis). |
 | `template-parts/sticky-call.php` | Barra fixa daurada en mòbil: «⚡ LLAMAR: 919 93 26 78». |
 | `template-parts/hero.php`, `services-grid.php` | Peces reutilitzades. |
+| `template-parts/page-about.php` | «Quiénes somos»: 2 textos curts i 1 foto. |
 | `js/navigation.js` | Menú mòbil (sense dependències, uns 40 línies). |
 | `inc/text-slots.php` | Buits de text per tipus de pàgina: editors clàssics al backend i sortida al front. |
 | `js/admin-photos.js` | Selector de la mediateca per a les 2 fotos (només a l'administració). |
@@ -51,7 +52,7 @@ Sota l'editor principal de cada pàgina hi ha el quadre **«Huecos de texto de l
 | Instalación de cerraduras y cerrojos | Introducción · Servicio urgente 24 h · Tipos de cerrojos · Alta seguridad y marcas · Según el tipo de puerta · Precios · CTA |
 | Cambio de cerradura y bombín | Introducción · Cambiar bombín · Blindadas/acorazadas · Tipos de cerraduras · Económico · CTA |
 | Reparación de cierres metálicos | Introducción · Servicio urgente · Tipos de cierres · Motorización · Comercios, garajes y naves · ¿Por qué elegirnos? · CTA |
-| Quiénes somos | Introducción · Nuestra historia · Cómo trabajamos hoy · Nuestro compromiso · CTA |
+| Quiénes somos | Texto 1 · Texto 2 (fragments curts) i **una sola foto**: Texto 1 \| Foto → Texto 2 |
 
 Ordre al frontend:
 

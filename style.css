@@ -1933,3 +1933,12 @@ Responsive
 		padding-bottom: 0;
 	}
 }
+
+/* "Quiénes somos": short texts, so centre text 1 on the photo and tighten text 2. */
+.page-about .grid-layout-2col {
+	align-items: center;
+}
+
+.page-about .grid-layout-2col + .text-slots {
+	padding-top: 0;
+}
